@@ -2019,11 +2019,11 @@ const OPTIONS_LOCATORS = {
       switch (type) {
         case 'mostly-equals':
           return By.xpath(
-            `//option[normalize-space(translate(., '${nbsp}', ' ')) = '${labelBody}']`
+            `.//option[normalize-space(translate(., '${nbsp}', ' ')) = '${labelBody}']`
           )
       }
     }
-    return By.xpath(`//option[. = '${label}']`)
+    return By.xpath(`.//option[. = '${label}']`)
   },
   index: (index: string) => By.css(`*:nth-child(${index})`),
 }

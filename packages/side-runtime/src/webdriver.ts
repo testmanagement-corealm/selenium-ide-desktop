@@ -1521,8 +1521,12 @@ export default class WebDriverExecutor {
       this.withCancel(async () => {
         const el = await this.elementIsLocated(locator, fallback)
         if (!el) return null
-        const elText = (await el.getText()).replace(/\u00A0/g, ' ').trim()
-        return elText === text.replace(/\u00A0/g, ' ').trim()
+        try {
+          const elText = (await el.getText()).replace(/\u00A0/g, ' ').trim()
+          return elText === text.replace(/\u00A0/g, ' ').trim()
+        } catch (e) {
+          return null
+        }
       })
     )
     await this.driver.wait<boolean>(textCondition, timeout)

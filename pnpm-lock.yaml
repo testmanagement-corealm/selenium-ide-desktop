@@ -273,7 +273,7 @@ importers:
         specifier: ^4.0.1
         version: link:../get-driver
       '@seleniumhq/side-api':
-        specifier: ^4.0.4
+        specifier: ^4.0.5
         version: link:../side-api
       '@seleniumhq/side-commons':
         specifier: ^4.0.1
@@ -282,7 +282,7 @@ importers:
         specifier: ^4.0.1
         version: link:../side-model
       '@seleniumhq/side-runtime':
-        specifier: ^4.0.3
+        specifier: ^4.0.4
         version: link:../side-runtime
       dnd-core:
         specifier: ^16.0.1
@@ -439,7 +439,7 @@ importers:
         specifier: ^4.0.1
         version: link:../side-model
       '@seleniumhq/side-runtime':
-        specifier: ^4.0.3
+        specifier: ^4.0.4
         version: link:../side-runtime
       lodash:
         specifier: ^4.17.21
@@ -483,7 +483,7 @@ importers:
         specifier: ^4.0.1
         version: link:../side-model
       '@seleniumhq/side-runtime':
-        specifier: ^4.0.3
+        specifier: ^4.0.4
         version: link:../side-runtime
       commander:
         specifier: ^9.4.0
@@ -534,7 +534,7 @@ importers:
         specifier: ^4.0.1
         version: link:../side-model
       '@seleniumhq/side-runtime':
-        specifier: ^4.0.3
+        specifier: ^4.0.4
         version: link:../side-runtime
       commander:
         specifier: ^11.0.0

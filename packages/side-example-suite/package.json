@@ -17,11 +17,11 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "side-code-export": "^4.0.2",
+    "side-code-export": "^4.0.4",
     "@seleniumhq/code-export-python-pytest": "^4.0.1"
   },
   "devDependencies": {
-    "@seleniumhq/side-api": "^4.0.4"
+    "@seleniumhq/side-api": "^4.0.6"
   },
   "repository": {
     "type": "git",

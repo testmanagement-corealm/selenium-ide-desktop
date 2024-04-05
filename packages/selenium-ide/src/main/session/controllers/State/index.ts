@@ -13,7 +13,7 @@ import {
 import clone from 'lodash/fp/clone'
 import merge from 'lodash/fp/merge'
 import BaseController from '../Base'
-import { loadingID } from '@seleniumhq/side-api/src/constants/loadingID'
+import { loadingID } from '@seleniumhq/side-api/dist/constants/loadingID'
 import getCore from 'main/api/helpers/getCore'
 
 const queue = (op: () => void) => setTimeout(op, 0)

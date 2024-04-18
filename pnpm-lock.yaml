@@ -270,7 +270,7 @@ importers:
         specifier: ^4.0.1
         version: link:../get-driver
       '@seleniumhq/side-api':
-        specifier: ^4.0.6
+        specifier: ^4.0.7
         version: link:../side-api
       '@seleniumhq/side-commons':
         specifier: ^4.0.1
@@ -495,7 +495,7 @@ importers:
         version: link:../side-code-export
     devDependencies:
       '@seleniumhq/side-api':
-        specifier: ^4.0.6
+        specifier: ^4.0.7
         version: link:../side-api
 
   packages/side-migrate:

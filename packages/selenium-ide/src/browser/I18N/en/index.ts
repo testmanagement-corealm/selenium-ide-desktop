@@ -15,7 +15,6 @@ const electronMenuTree = {
   hideOthers: 'Hide Others',
   showAll: 'Show All',
   quit: 'Quit',
-  newString: 'how this?',
 }
 
 const fileMenuTree = {

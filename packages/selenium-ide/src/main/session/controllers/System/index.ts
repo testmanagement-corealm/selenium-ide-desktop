@@ -1,4 +1,4 @@
-import * as langFileEn from 'browser/I18N/en'
+import langFileEn, {LanguageMap} from 'browser/I18N/en'
 import { dialog, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { writeFile } from 'fs/promises'
@@ -6,6 +6,7 @@ import { COLOR_CYAN, isAutomated, vdebuglog } from 'main/util'
 import { platform } from 'os'
 import { inspect } from 'util'
 import BaseController from '../Base'
+import { flattenNestedObject } from 'browser/I18N/util'
 
 let firstTime = true
 export default class SystemController extends BaseController {
@@ -17,7 +18,7 @@ export default class SystemController extends BaseController {
   isDown = true
   isDev = false
   shuttingDown = false
-  languageMap: langFileEn.LanguageMap = langFileEn.backend
+  languageMap: LanguageMap = langFileEn
   logs: string[] = []
   loggers = {
     api: vdebuglog('api', COLOR_CYAN),
@@ -55,13 +56,17 @@ export default class SystemController extends BaseController {
 
   /***以下是我新增***/
   async getLanguageMap(frontend = false) {
-    const language = await this.session.app.getLocale()
     try {
+      const language = await this.session.app.getLocale()
       const langFile = await import(`../../i18n/${language}/Commands`)
-      this.languageMap = langFile.backend
-      return frontend ? langFile.frontend : langFile.backend
+      this.languageMap = langFile.default
     } catch (e) {
-      return frontend ? langFileEn.frontend : langFileEn.backend
+      // lang DNE, stay en
+    } finally {
+      if (frontend) {
+        return flattenNestedObject(this.languageMap)
+      }
+      return this.languageMap
     }
   }
 

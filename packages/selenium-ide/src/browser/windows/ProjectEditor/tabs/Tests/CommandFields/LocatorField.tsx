@@ -54,7 +54,7 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
     }
   }
   const fullnote = intl.formatMessage({
-    id: languageMap.commandMap[command.command][fieldName]?.description,
+    id: `commandMap.${command.command}.${fieldName}.description`,
   });
   const label = fullnote
     ? handleLabel(FieldName) + ' - ' + fullnote

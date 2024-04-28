@@ -1,7 +1,6 @@
-import { Commands as commandMapEnglish } from '@seleniumhq/side-model'
-import { flattenNestedObject } from '../util'
+import { Commands as commandMap } from '@seleniumhq/side-model'
 
-const windowTabEnglish = {
+const windowTab = {
   file: '&File',
   edit: '&Edit',
   view: '&View',
@@ -9,16 +8,17 @@ const windowTabEnglish = {
   title: 'Project Editor',
 }
 
-const electronMenuTreeEnglish = {
+const electronMenuTree = {
   about: 'About Electron',
   services: 'Services',
   hideElectron: 'Hide Electron',
   hideOthers: 'Hide Others',
   showAll: 'Show All',
   quit: 'Quit',
+  newString: 'how this?',
 }
 
-const fileMenuTreeEnglish = {
+const fileMenuTree = {
   newProject: 'New Project',
   loadProject: 'Load Project',
   recentProjects: 'Recent Projects',
@@ -26,7 +26,7 @@ const fileMenuTreeEnglish = {
   saveProjectAs: 'Save Project As...',
 }
 
-const editMenuTreeEnglish = {
+const editMenuTree = {
   undo: 'Undo (for input)',
   redo: 'Redo (for input)',
   cut: 'Cut (for input)',
@@ -34,25 +34,25 @@ const editMenuTreeEnglish = {
   paste: 'Paste (for input)',
 }
 
-const viewMenuTreeEnglish = {
+const viewMenuTree = {
   showDevTools: 'Show DevTools',
   resetPlaybackWindows: 'Reset Playback Windows',
   refreshPlaybackWindow: 'Refresh Playback Window',
 }
 
-const helpMenuTreeEnglish = {
+const helpMenuTree = {
   dumpSession: 'Dump Session To File',
 }
 
-const mainMenuEnglish = { tests: 'Tests', suites: 'Suites', config: 'Config' }
+const mainMenu = { tests: 'Tests', suites: 'Suites', config: 'Config' }
 
-const configTabEnglish = {
+const configTab = {
   project: 'Project',
   system: 'System',
   outPut: 'outPut',
 }
 
-const outPutConfigEnglish = {
+const outPutConfig = {
   webLink: 'click to jump to the testing platform',
   platformUrl: 'test platform address',
   platformUrlHelper: 'The final use case is displayed on this front-end page',
@@ -79,7 +79,7 @@ const outPutConfigEnglish = {
   failMessage: 'please contact the backend developer for assistance!',
 }
 
-const systemConfigEnglish = {
+const systemConfig = {
   theme: 'Theme preference',
   themeHelper: 'restart required to take effect',
   commandInsert: 'New command insert preference',
@@ -92,7 +92,7 @@ const systemConfigEnglish = {
   restartDriver: 'restart driver',
 }
 
-const projectConfigEnglish = {
+const projectConfig = {
   name: 'name',
   stepTimeout: 'Step Timeout (MILLISECONDS)',
   stepTimeoutHelper: 'Steps will fail if they take longer than this setting',
@@ -101,7 +101,7 @@ const projectConfigEnglish = {
   projectPlugins: 'Project Plugins',
 }
 
-const suitesTabEnglish = {
+const suitesTab = {
   testInSuite: 'Tests in suite',
   dropTests: 'Drop Tests Here',
   AvailableTests: 'Available tests',
@@ -115,19 +115,19 @@ const suitesTabEnglish = {
   create: 'Create',
   deleteNotice: 'Are you sure you want to delete suite {name}?',
   tooltip:
-    'double click to modify the name,right click to export or delete suites',
-  notDeleteNotice: 'only one suites is not allowed to be deleted!',
+    'Double click to modify the name.\nRight click to export or delete suites',
+  notDeleteNotice: 'If only one suite is left, it is not allowed to be deleted',
   noSuiteSelected: 'No Suite Selected',
   playSuite: 'Play Suite',
   deleteSuite: 'Delete suite(s)',
   exportSuite: 'Export suite(s) to ',
 }
 
-const testsTabEnglish = {
+const testsTab = {
   allTests: '[All tests]',
   deleteNotice: 'Delete this test?',
   tooltip:
-    'double click to modify the name,right click to export or delete test case',
+    'Double click to modify the name,\nRight click to export or delete test case',
   notDeleteNotice: 'only one test case is not allowed to be deleted!',
   dialogTitle: 'Please specify the new test name',
   testName: 'Test Name',
@@ -141,7 +141,7 @@ const testsTabEnglish = {
   exportTest: 'Export test(s) to ',
 }
 
-const playbackEnglish = {
+const playback = {
   content: 'This is where recording and playback will occur',
   windowSize:
     'Force panel window dimensions (will zoom out if larger than panel and crop if smaller)',
@@ -150,18 +150,18 @@ const playbackEnglish = {
   url: 'URL',
 }
 
-const splashEnglish = {
+const splash = {
   present: 'Welcome to the Selenium IDE client',
   logPath: 'Your log file path:',
   openNotice: 'You can load or create one project',
-  loadProject: 'load project',
-  createProject: 'create project',
-  openRecent: 'open recent',
+  loadProject: 'Load Project',
+  createProject: 'Create Project',
+  openRecent: 'Recent Projects',
   languageSelect: 'choose language',
 }
 
 // 用例编辑页面
-const testCoreEnglish = {
+const testCore = {
   play: 'Play',
   stop: 'Stop',
   record: 'Record',
@@ -196,28 +196,28 @@ const testCoreEnglish = {
   playFromStart: 'Play From Start',
 }
 
-export const backend = {
-  windowTab: windowTabEnglish,
-  electronMenuTree: electronMenuTreeEnglish,
-  fileMenuTree: fileMenuTreeEnglish,
-  editMenuTree: editMenuTreeEnglish,
-  viewMenuTree: viewMenuTreeEnglish,
-  helpMenuTree: helpMenuTreeEnglish,
-  mainMenu: mainMenuEnglish,
-  testsTab: testsTabEnglish,
-  suitesTab: suitesTabEnglish,
-  configTab: configTabEnglish,
-  systemConfig: systemConfigEnglish,
-  projectConfig: projectConfigEnglish,
-  outPutConfig: outPutConfigEnglish,
-  splash: splashEnglish,
-  playback: playbackEnglish,
-  testCore: testCoreEnglish,
-  commandMap: commandMapEnglish,
+export const language = {
+  windowTab,
+  electronMenuTree,
+  fileMenuTree,
+  editMenuTree,
+  viewMenuTree,
+  helpMenuTree,
+  mainMenu,
+  testsTab,
+  suitesTab,
+  configTab,
+  systemConfig,
+  projectConfig,
+  outPutConfig,
+  splash,
+  playback,
+  testCore,
+  commandMap,
 }
 
 // Creating a type of this so other locales are prompted to be filled in by
 // the developer
-export type LanguageMap = typeof backend
+export type LanguageMap = typeof language
 
-export const frontend = flattenNestedObject(backend)
+export default language

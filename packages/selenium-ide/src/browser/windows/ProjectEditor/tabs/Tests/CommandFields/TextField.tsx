@@ -39,11 +39,6 @@ const CommandTextField: FC<CommandFieldProps> = ({
         return value
     }
   }
-  console.log(
-    languageMap.commandMap[command.command][fieldName as LocatorFields]
-      ?.description,
-    command
-  )
   // 一定会使用languageMap.commandMap,其实是为了兼容参数commands
   const fullNote =
     note ||

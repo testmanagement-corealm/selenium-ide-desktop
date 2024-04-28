@@ -6,7 +6,7 @@ const processOneLevel = <T extends RecursiveShape>(
   prefix: string,
   getValue: (key: string, value: string) => any,
   obj: T
-): Record<string, any> => {
+): T => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     const keyPath = prefix ? `${prefix}.${key}` : key
     if (value && typeof value === 'object') {
@@ -28,7 +28,7 @@ const processOneLevel = <T extends RecursiveShape>(
 export const transformNestedObject = <T extends RecursiveShape>(
   getValue: (key: string, value: string) => any,
   obj: T
-): Record<string, any> => processOneLevel<T>('', getValue, obj)
+): T => processOneLevel<T>('', getValue, obj)
 
 const flattenOneLevel = <T extends RecursiveShape>(
   prefix: string,

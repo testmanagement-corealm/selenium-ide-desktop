@@ -87,7 +87,7 @@ const TestsDrawer: FC = () => {
             sx={{ bottom: 0 }}
             value={safeSuiteID}
           >
-            <MenuItem value="">{languageMap.testsTab.allTests}</MenuItem>
+            <MenuItem value=""><FormattedMessage id={languageMap.testsTab.allTests} /></MenuItem>
             {suites.map((s) => (
               <MenuItem key={s.id} value={s.id}>
                 {s.name}

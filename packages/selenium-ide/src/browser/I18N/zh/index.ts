@@ -1,9 +1,9 @@
 import type { LanguageMap } from '../en/index'
-import Commands from '@seleniumhq/side-model/dist/I18N/zh/Commands'
+import commandMap from '@seleniumhq/side-model/dist/I18N/zh/Commands'
 import { transformNestedObject } from '../util'
 
 // 窗口顶部菜单
-const windowTabChinese = {
+const windowTab = {
   file: '&文件',
   edit: '&编辑',
   view: '&查看',
@@ -11,7 +11,7 @@ const windowTabChinese = {
   title: '项目编辑器',
 }
 // Electron菜单
-const electronMenuTreeChinese = {
+const electronMenuTree = {
   about: 'Electron信息',
   services: '服务信息',
   hideElectron: '隐藏Electron',
@@ -20,7 +20,7 @@ const electronMenuTreeChinese = {
   quit: '退出',
 }
 // 文件菜单
-const fileMenuTreeChinese = {
+const fileMenuTree = {
   newProject: '创建项目',
   loadProject: '导入项目',
   recentProjects: '最近使用项目',
@@ -28,7 +28,7 @@ const fileMenuTreeChinese = {
   saveProjectAs: '项目另存为...',
 }
 // 编辑菜单
-const editMenuTreeChinese = {
+const editMenuTree = {
   undo: '撤销 (针对输入)',
   redo: '恢复 (针对输入)',
   cut: '剪切 (针对输入)',
@@ -37,29 +37,29 @@ const editMenuTreeChinese = {
 }
 
 // 查看菜单
-const viewMenuTreeChinese = {
+const viewMenuTree = {
   showDevTools: '开发者工具',
   resetPlaybackWindows: '重置回放窗口',
   refreshPlaybackWindow: '刷新回放窗口',
 }
 
 // 帮助菜单
-const helpMenuTreeChinese = {
+const helpMenuTree = {
   dumpSession: '将Session转存到文件',
 }
 
 // 主页面菜单
-const maiMenuChinese = { tests: '用例', suites: '集合', config: '配置' }
+const mainMenu = { tests: '用例', suites: '集合', config: '配置' }
 
 // 配置tab
-const configTabChinese = {
+const configTab = {
   project: '项目配置',
   system: '系统配置',
   outPut: '导出配置',
 }
 
 // 导出配置页面
-const outPutConfigChinese = {
+const outPutConfig = {
   webLink: '点击跳转至测试平台',
   platformUrl: '测试平台地址',
   platformUrlHelper: '用例最终展示在此前端页面',
@@ -83,7 +83,7 @@ const outPutConfigChinese = {
 }
 
 // 系统配置页面
-const systemConfigChinese = {
+const systemConfig = {
   theme: '主题偏好',
   themeHelper: '需要重新启动才能生效',
   commandInsert: '新命令插入首选项',
@@ -97,7 +97,7 @@ const systemConfigChinese = {
 }
 
 // 项目配置页面
-const projectConfigChinese = {
+const projectConfig = {
   name: '项目名称',
   stepTimeout: '步骤超时（毫秒）',
   stepTimeoutHelper: '如果花费的时间超过此设置,步骤将失败',
@@ -106,7 +106,7 @@ const projectConfigChinese = {
   projectPlugins: '项目插件',
 }
 // 集合Tab
-const suitesTabChinese = {
+const suitesTab = {
   testInSuite: '集合中的用例',
   dropTests: '放置用例到此处',
   AvailableTests: '可使用的用例列表',
@@ -128,7 +128,7 @@ const suitesTabChinese = {
 }
 
 // 用例Tab
-const testsTabChinese = {
+const testsTab = {
   allTests: '[所有用例]',
   deleteNotice: '确认删除用例?',
   tooltip: '双击修改名称,右键导出或者删除集合',
@@ -146,7 +146,7 @@ const testsTabChinese = {
 }
 
 // 选择项目页面
-const splashChinese = {
+const splash = {
   present: '欢迎使用Selenium IDE桌面版',
   logPath: '您的日志文件路径:',
   openNotice: '您可以加载或者创建项目',
@@ -158,7 +158,7 @@ const splashChinese = {
 }
 
 // 用例回放页面
-const playbackChinese = {
+const playback = {
   content: '非bidi模式下,用例的录制和回放将会展示在这里',
   windowSize: '强制窗口尺寸（如果大于面板则缩小，如果小于面板则裁剪）',
   width: '宽度',
@@ -167,7 +167,7 @@ const playbackChinese = {
 }
 
 // 用例编辑页面
-const testCoreChinese = {
+const testCore = {
   play: '回放',
   stop: '停止',
   record: '录制',
@@ -203,23 +203,23 @@ const testCoreChinese = {
 }
 
 export const backend: LanguageMap = {
-  windowTab: windowTabChinese,
-  electronMenuTree: electronMenuTreeChinese,
-  fileMenuTree: fileMenuTreeChinese,
-  editMenuTree: editMenuTreeChinese,
-  viewMenuTree: viewMenuTreeChinese,
-  helpMenuTree: helpMenuTreeChinese,
-  mainMenu: maiMenuChinese,
-  testsTab: testsTabChinese,
-  suitesTab: suitesTabChinese,
-  configTab: configTabChinese,
-  systemConfig: systemConfigChinese,
-  projectConfig: projectConfigChinese,
-  outPutConfig: outPutConfigChinese,
-  splash: splashChinese,
-  playback: playbackChinese,
-  testCore: testCoreChinese,
-  commandMap: Commands,
+  windowTab,
+  electronMenuTree,
+  fileMenuTree,
+  editMenuTree,
+  viewMenuTree,
+  helpMenuTree,
+  mainMenu,
+  testsTab,
+  suitesTab,
+  configTab,
+  systemConfig,
+  projectConfig,
+  outPutConfig,
+  splash,
+  playback,
+  testCore,
+  commandMap,
 }
 
 export const frontend = transformNestedObject((_k, v) => v, backend)

@@ -30,7 +30,6 @@ const CommandSelector: FC<CommandSelectorProps> = ({
   if (commandsList.length === 0) {
     return null
   }
-  const description = languageMap.commandMap[command.command]?.description
   const setCommand = setCommandFactory(testID, command.id)
   const setOpensWindow = setOpensWindowFactory(testID, command.id)
   const commandOptions = commandsList.map((item) => {
@@ -106,7 +105,7 @@ const CommandSelector: FC<CommandSelectorProps> = ({
         </Tooltip>
         <Tooltip
           className="flex-initial mx-2 my-auto"
-          title={<FormattedMessage id={description as string} />}
+          title={<FormattedMessage id={`commandMap.${command.command}.description`} />}
           placement="top-end"
         >
           <HelpCenter />

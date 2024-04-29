@@ -1,6 +1,5 @@
 import type { LanguageMap } from '../en/index'
 import commandMap from '@seleniumhq/side-model/dist/I18N/zh/Commands'
-import { transformNestedObject } from '../util'
 
 // 窗口顶部菜单
 const windowTab = {
@@ -202,7 +201,7 @@ const testCore = {
   playFromStart: '从头开始回放',
 }
 
-export const backend: LanguageMap = {
+export const language: LanguageMap = {
   windowTab,
   electronMenuTree,
   fileMenuTree,
@@ -222,4 +221,4 @@ export const backend: LanguageMap = {
   commandMap,
 }
 
-export const frontend = transformNestedObject((_k, v) => v, backend)
+export default language

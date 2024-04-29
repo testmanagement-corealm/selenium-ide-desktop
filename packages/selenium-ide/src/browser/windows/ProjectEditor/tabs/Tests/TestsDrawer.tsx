@@ -15,7 +15,7 @@ import { context as testsContext } from 'browser/contexts/tests'
 import { context as testResultsContext } from 'browser/contexts/playback-test-results'
 import { FormattedMessage, useIntl } from 'react-intl'
 import languageMap from 'browser/I18N/keys'
-import { QuestionAnswer } from '@mui/icons-material'
+import { QuestionMark } from '@mui/icons-material'
 
 const {
   state: { setActiveTest: setSelected, setActiveSuite },
@@ -65,7 +65,10 @@ const TestsDrawer: FC = () => {
           <Tooltip
             title={<FormattedMessage id={languageMap.testsTab.tooltip} />}
           >
-            <QuestionAnswer />
+            <QuestionMark
+              className="mx-2"
+              sx={{ color: 'primary.main', scale: 0.75 }}
+            />
           </Tooltip>
         </EditorToolbar>
         <FormControl size="small">
@@ -87,7 +90,9 @@ const TestsDrawer: FC = () => {
             sx={{ bottom: 0 }}
             value={safeSuiteID}
           >
-            <MenuItem value=""><FormattedMessage id={languageMap.testsTab.allTests} /></MenuItem>
+            <MenuItem value="">
+              <FormattedMessage id={languageMap.testsTab.allTests} />
+            </MenuItem>
             {suites.map((s) => (
               <MenuItem key={s.id} value={s.id}>
                 {s.name}

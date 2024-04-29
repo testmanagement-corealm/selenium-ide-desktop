@@ -8,6 +8,7 @@ import { context } from 'browser/contexts/suites'
 import SuitesToolbar from './Toolbar'
 import { FormattedMessage } from 'react-intl'
 import languageMap from 'browser/I18N/keys'
+import { QuestionMark } from '@mui/icons-material'
 
 const {
   state: { setActiveSuite: setSelected },
@@ -21,27 +22,32 @@ const SuitesDrawer: FC = () => {
   const suites = useContext(context)
   return (
     <Drawer>
-      <SuitesToolbar />
+      <SuitesToolbar>
+        <Tooltip
+          title={<FormattedMessage id={languageMap.suitesTab.tooltip} />}
+        >
+          <QuestionMark
+            className="mx-2"
+            sx={{ color: 'primary.main', scale: 0.75 }}
+          />
+        </Tooltip>
+      </SuitesToolbar>
       <List className="flex-col flex-1 overflow-y" dense>
         {suites
           .slice()
           .sort((a, b) => a.name.localeCompare(b.name))
           .map(({ id, name }) => (
-            <Tooltip
-              title={<FormattedMessage id={languageMap.suitesTab.tooltip} />}
-            >
-              <RenamableListItem
-                id={id}
-                key={id}
-                name={name}
-                onContextMenu={() => {
-                  window.sideAPI.menus.open('suiteManager', [id])
-                }}
-                rename={rename}
-                selected={id === activeSuiteID}
-                setSelected={setSelected}
-              />
-            </Tooltip>
+            <RenamableListItem
+              id={id}
+              key={id}
+              name={name}
+              onContextMenu={() => {
+                window.sideAPI.menus.open('suiteManager', [id])
+              }}
+              rename={rename}
+              selected={id === activeSuiteID}
+              setSelected={setSelected}
+            />
           ))}
       </List>
     </Drawer>

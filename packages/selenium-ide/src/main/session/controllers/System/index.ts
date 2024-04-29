@@ -64,7 +64,9 @@ export default class SystemController extends BaseController {
       // lang DNE, stay en
     } finally {
       if (frontend) {
-        return flattenNestedObject(this.languageMap)
+        // React intl uses a flat dict so we convert it here
+        const frontendMap = flattenNestedObject(this.languageMap)
+        return frontendMap
       }
       return this.languageMap
     }

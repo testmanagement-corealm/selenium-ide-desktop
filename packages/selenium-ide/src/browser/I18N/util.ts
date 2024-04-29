@@ -41,8 +41,10 @@ const flattenOneLevel = <T extends RecursiveShape>(
     if (value && typeof value === 'object') {
       flattenOneLevel<T>(keyPath, getValue, target, value as T)
     } else {
-      // @ts-expect-error our shape traversal kinda sucks :(
-      acc[keyPath] = getValue(keyPath, value)
+      if (typeof value !== 'function') {
+        // @ts-expect-error our shape traversal kinda sucks :(
+        acc[keyPath] = getValue(keyPath, value)
+      }
     }
     return acc
   }, target as T)

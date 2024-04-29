@@ -68,7 +68,7 @@ const baseListener = <ARGS extends VariadicArgs, RESULT extends any>(
   }
 }
 
-const responsePaths = ['recorder.onRequestelementAt']
+const responsePaths = ['recorder.onRequestElementAt']
 const wrappedListener = <ARGS extends VariadicArgs>(
   path: string,
   session: Session,
@@ -115,6 +115,7 @@ const wrappedListener = <ARGS extends VariadicArgs>(
             resolve(null)
           }
         } catch (e) {
+          console.error(e)
           // Sender has expired
           removeListener(event)
         }

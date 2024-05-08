@@ -1,6 +1,6 @@
 {
   "name": "selenium-ide",
-  "version": "4.0.1-beta.10",
+  "version": "4.0.1-beta.11",
   "private": false,
   "description": "Selenium IDE electron app",
   "author": "Todd <tarsitodd@gmail.com>",
@@ -57,9 +57,7 @@
     "mac": {
       "target": {
         "target": "default",
-        "arch": [
-          "x64"
-        ]
+        "arch": "universal"
       },
       "category": "public.app-category.developer-tools",
       "darkModeSupport": true

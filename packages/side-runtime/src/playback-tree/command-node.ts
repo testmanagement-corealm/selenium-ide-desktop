@@ -32,7 +32,8 @@ export interface CommandExecutorOptions {
 export interface CommandExecutionResult {
   next?: CommandNode
   skipped?: boolean
-  value?: any
+  value?: any,
+  warning?: string
 }
 
 export const getCommandDisplayString = ({
@@ -93,11 +94,26 @@ export class CommandNode {
   }
 
   shouldSkip(): boolean {
-    return Boolean(this.command.skip || this.command.command.startsWith('//'))
+    // return Boolean(this.command.skip || this.command.command.startsWith('//'))
+        // Check if command should be skipped
+        const shouldSkip = Boolean(
+          this.command.skip || 
+          this.command.command.startsWith('//') || 
+          this.command.command === 'step' ||
+          this.command.command ===  'extractData'|| this.command.command ===  'GenerateDate'||
+          this.command.command === 'ScrollToPosition' || this.command.command === "RightClick"||
+           this.command.command === 'Createteststep'|| this.command.command ===  'Waituntilset'||
+           this.command.command ===  'createVariable' || this.command.command === 'getText'||
+           this.command.command ===  'mouseHover' || this.command.command ===  'webRtcOpen'||
+           this.command.command ===  'thinkTime'|| this.command.command ===  'scrollTo'
+        );
+      
+        return shouldSkip;
   }
 
   async execute(
     commandExecutor: WebDriverExecutor,
+    targetindex: number,
     args?: CommandExecutorOptions
   ) {
     if (this._isRetryLimit()) {
@@ -109,14 +125,63 @@ export class CommandNode {
       return this._executionResult({ skipped: true })
     }
     await commandExecutor.beforeCommand(this.command)
-    const result = await this._executeCommand(commandExecutor, args)
+    const result = await this._executeCommand(commandExecutor, args,targetindex)
     await commandExecutor.afterCommand(this.command)
     return this._executionResult(result)
   }
 
+  async setExecutor(commandExecutor: WebDriverExecutor, targetIndex: number) {
+   // console.log('targetindex', targetIndex)
+    const { command } = this;
+    const { value } = command;
+    const commandName = command.command;
+    const customCommand = commandExecutor.customCommands[commandName];
+    
+    const existingCommandName = commandExecutor.name(commandName);
+    //console.log('existingCommandName', existingCommandName);
+  
+    // @ts-expect-error webdriver is too kludged by here
+    if (!customCommand && !commandExecutor[existingCommandName]) {
+      throw new Error(`Missing expected command type ${commandName}`);
+    }
+    // Check if targets exists and is an array
+  // Check if targets exists and is an array
+  if (!Array.isArray(command.targets) || command.targets.length === 0 || targetIndex == 0) {
+    // Use the target from this.command if targets is empty
+    //console.log(`Using target from command: ${command.target}`);
+    return () => {
+      return customCommand
+        ? customCommand.execute({ ...command, target: command.target }, commandExecutor)
+        : // @ts-expect-error webdriver is too kludged by here
+          commandExecutor[existingCommandName](command.target, value, { ...command, target: command.target });
+    };
+  }
+
+    // Get the specified target based on the index
+    const target = command.targets[targetIndex]?.[0]; // Use the first element of the target array
+
+
+    console.log('target',target)
+  
+    // If the target is not found, throw an error
+    if (!target) {
+      throw new Error(`Target not found at index ${targetIndex}`);
+    }
+  
+    // Create the executor function using the specified target
+    const executor = customCommand
+      ? () => customCommand.execute({ ...command, target }, commandExecutor)
+      : // @ts-expect-error webdriver is too kludged by here
+        () => commandExecutor[existingCommandName](target, value, { ...command, target });
+  
+    return executor;
+  }
+  
+
   async _executeCommand(
     commandExecutor: WebDriverExecutor,
-    { executorOverride }: CommandExecutorOptions = {}
+    { executorOverride }: CommandExecutorOptions = {},
+    targetindex: number
   ) {
     if (executorOverride) {
       return await executorOverride(this.command.target, this.command.value)
@@ -126,7 +191,7 @@ export class CommandNode {
       return
     } else {
       const { command } = this
-      const { comment, target, value } = command
+      // const { comment, target, value } = command
       const commandName = command.command
       const customCommand = commandExecutor.customCommands[commandName]
       const existingCommandName = commandExecutor.name(commandName)
@@ -134,88 +199,145 @@ export class CommandNode {
       if (!customCommand && !commandExecutor[existingCommandName]) {
         throw new Error(`Missing expected command type ${commandName}`)
       }
-      const executor = customCommand
-        ? () => customCommand.execute(command, commandExecutor)
-        : // @ts-expect-error webdriver is too kludged by here
-          () => commandExecutor[existingCommandName](target, value, command)
-      const cmdList = [
-        'click',
-        'check',
-        'select',
-        'type',
-        'sendKeys',
-        'uncheck',
-      ]
-      const ignoreRetry = !cmdList.includes(commandName)
-      if (ignoreRetry) {
-        try {
-          return await executor()
-        } catch (e) {
-          const err = e as Error
-          err.message =
-            err.message +
-            ` during${
-              comment ? ` (${comment})` : ''
-            } ${commandName}:${target}:${value}`
-          throw err
-        }
-      }
-      return this.retryCommand(
-        executor,
-        Date.now() + commandExecutor.implicitWait
-      )
+      // const executor = customCommand
+      //   ? () => customCommand.execute(command, commandExecutor)
+      //   : // @ts-expect-error webdriver is too kludged by here
+      //     () => commandExecutor[existingCommandName](target, value, command)
+      // const cmdList = [
+      //   'click',
+      //   'check',
+      //   'select',
+      //   'type',
+      //   'sendKeys',
+      //   'uncheck',
+      // ]
+      // const ignoreRetry = !cmdList.includes(commandName)
+      // if (ignoreRetry) {
+      //   try {
+      //     return await executor()
+      //   } catch (e) {
+      //     const err = e as Error
+      //     err.message =
+      //       err.message +
+      //       ` during${
+      //         comment ? ` (${comment})` : ''
+      //       } ${commandName}:${target}:${value}`
+      //     throw err
+      //   }
+      // }
+      // return this.retryCommand(
+      //   executor,
+      //   Date.now() + commandExecutor.implicitWait
+      // )
+      const executor = await this.setExecutor(commandExecutor,targetindex)
+      return this.retryCommand(executor)
     }
   }
 
   async pauseTimeout(timeout?: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
-
-  retryCommand(
-    execute: () => Promise<unknown>,
-    timeout: number
+  
+  retryCommand( 
+    execute: () => Promise<unknown>
   ): Promise<unknown> {
     return new Promise((res, rej) => {
-      const timeLimit = timeout - Date.now()
-      const commandString = `during${
-        this.command.comment ? ` (${this.command.comment})` : ''
-      } ${this.command.command}:${this.command.target}:${this.command.value}`
-      if (timeLimit <= 0) {
-        return rej(new Error(`Operation timed out ${commandString}`))
-      }
-      const expirationTimer = setTimeout(() => {
-        rej(new Error(`Operation timed out ${commandString}`))
-      }, timeLimit)
       execute()
         .then((result) => {
-          clearTimeout(expirationTimer)
+         // console.log('result', result)
           res(result)
         })
-        .catch((e) => {
-          clearTimeout(expirationTimer)
+        .catch(async(e) => {
+         // console.log('first err',e)
           try {
-            this.handleTransientError(e, timeout)
-            setTimeout(() =>
-              this.retryCommand(execute, timeout).then(res).catch(rej)
-            )
+            this.handleTransientError(e)
           } catch (e) {
+           // console.log('second err',e)
             const err = e as Error
-            err.message = err.message + ` ${commandString}`
             rej(err)
           }
         })
     })
   }
 
+  // retryCommand(
+  //   execute: () => Promise<unknown>,
+  //   timeout: number
+  // ): Promise<unknown> {
+  //   return new Promise((res, rej) => {
+  //     const timeLimit = timeout - Date.now()
+  //     const commandString = `during${
+  //       this.command.comment ? ` (${this.command.comment})` : ''
+  //     } ${this.command.command}:${this.command.target}:${this.command.value}`
+  //     if (timeLimit <= 0) {
+  //       return rej(new Error(`Operation timed out ${commandString}`))
+  //     }
+  //     const expirationTimer = setTimeout(() => {
+  //       rej(new Error(`Operation timed out ${commandString}`))
+  //     }, timeLimit)
+  //     execute()
+  //       .then((result) => {
+  //         clearTimeout(expirationTimer)
+  //         res(result)
+  //       })
+  //       .catch((e) => {
+  //         clearTimeout(expirationTimer)
+  //         try {
+  //           this.handleTransientError(e, timeout)
+  //           setTimeout(() =>
+  //             this.retryCommand(execute, timeout).then(res).catch(rej)
+  //           )
+  //         } catch (e) {
+  //           const err = e as Error
+  //           err.message = err.message + ` ${commandString}`
+  //           rej(err)
+  //         }
+  //       })
+  //   })
+  // }
+
   _executionResult(result: CommandExecutionResult = {}) {
     this._incrementTimesVisited()
     return {
       next: this.isControlFlow() ? result.next : this.next,
       skipped: result.skipped,
+      warning: result.warning ? result.warning: undefined
     }
   }
 
-  handleTransientError(e: unknown, timeout: number) {
+  // handleTransientError(e: unknown, timeout: number) {
+  //   if (e instanceof VerificationError) {
+  //     throw e
+  //   }
+  //   if (e instanceof AssertionError) {
+  //     throw e
+  //   }
+  //   const { command, target, value } = this.command
+  //   const thisCommand = `${command}-${target}-${value}`
+  //   const thisErrorMessage = e instanceof Error ? e.message : ''
+  //   const thisTransientError = `${thisCommand}-${thisErrorMessage}`
+  //   const lastTransientError = this.transientError
+  //   const isNewErrorMessage = lastTransientError !== thisTransientError
+  //   const notRetrying = Date.now() > timeout
+  //   if (isNewErrorMessage) {
+  //     this.transientError = thisTransientError
+  //     console.warn(
+  //       'Unexpected error occured during command:',
+  //       thisCommand,
+  //       notRetrying ? '' : 'retrying...'
+  //     )
+  //     if (thisErrorMessage) {
+  //       console.error(thisErrorMessage)
+  //     }
+  //   }
+
+  //   if (notRetrying) {
+  //     console.error('Command failure:', thisCommand)
+  //     throw e
+  //   }
+  // }
+
+  handleTransientError(e: unknown) {
     if (e instanceof VerificationError) {
       throw e
     }
@@ -228,25 +350,23 @@ export class CommandNode {
     const thisTransientError = `${thisCommand}-${thisErrorMessage}`
     const lastTransientError = this.transientError
     const isNewErrorMessage = lastTransientError !== thisTransientError
-    const notRetrying = Date.now() > timeout
+    // const notRetrying = Date.now() > timeout
     if (isNewErrorMessage) {
       this.transientError = thisTransientError
       console.warn(
         'Unexpected error occured during command:',
-        thisCommand,
-        notRetrying ? '' : 'retrying...'
+        thisCommand
       )
       if (thisErrorMessage) {
         console.error(thisErrorMessage)
       }
     }
 
-    if (notRetrying) {
+    // if (notRetrying) {
       console.error('Command failure:', thisCommand)
       throw e
-    }
+    // }
   }
-
   evaluateForEach(variables: Variables): boolean | string {
     let collection = variables.get(
       interpolateScript(this.command.target as string, variables).script

@@ -371,6 +371,130 @@ export default class Playback {
     }
   }
 
+  // async _executionLoop(
+  //   { ignoreBreakpoint }: { ignoreBreakpoint: boolean } = {
+  //     ignoreBreakpoint: false,
+  //   }
+  // ): Promise<void> {
+  //   if (
+  //     !this.currentExecutingNode &&
+  //     (this[state]?.callstack?.length ?? 0) > 1
+  //   ) {
+  //     this._unwind()
+  //   }
+  //   if (this.currentExecutingNode) {
+  //     const command = this.currentExecutingNode.command
+  //     const callstackIndex = (this[state].callstack as Callstack).length - 1
+  //     this[EE].emitCommandStateChange({
+  //       id: command.id,
+  //       callstackIndex,
+  //       command,
+  //       state: CommandStates.EXECUTING,
+  //     })
+
+  //     const steps = this[state].steps
+  //     if (this[state].stopping) {
+  //       return
+  //     } else if (this[state].pausing) {
+  //       await this._pause()
+  //       return await this._executionLoop({ ignoreBreakpoint: true })
+  //     } else if (steps !== undefined) {
+  //       if (steps === 0) {
+  //         this[state].steps = undefined
+  //         const stepPromise = this[state].stepPromise
+  //         if (stepPromise) {
+  //           stepPromise.res()
+  //         }
+  //         await this._pause()
+  //         return await this._executionLoop({ ignoreBreakpoint: true })
+  //       }
+  //       this[state].steps = steps - 1
+  //     }
+
+  //     const playTo = this[state].playTo
+  //     if (
+  //       (this.currentExecutingNode.command.isBreakpoint &&
+  //         !ignoreBreakpoint &&
+  //         !this.options.ignoreBreakpoints) ||
+  //       playTo?.command === this.currentExecutingNode.command.id
+  //     ) {
+  //       await this._break()
+  //       return await this._executionLoop({ ignoreBreakpoint: true })
+  //     }
+
+  //     try {
+  //       await this._delay()
+  //     } catch (err) {
+  //       if (this[state].stopping) {
+  //         return
+  //       } else if (this[state].pausing) {
+  //         await this._pause()
+  //         return await this._executionLoop({ ignoreBreakpoint: true })
+  //       }
+  //     }
+
+  //     let result
+  //     try {
+  //       result = await this._executeCommand(this.currentExecutingNode)
+  //     } catch (err) {
+  //       // console.error('Execute error', err)
+  //       if (err instanceof AssertionError) {
+  //         this[EE].emitCommandStateChange({
+  //           id: command.id,
+  //           callstackIndex,
+  //           command,
+  //           state: CommandStates.FAILED,
+  //           message: err.message,
+  //           error: err as Error,
+  //         })
+  //         return await this._handleException(() => {
+  //           this._setExitCondition(PlaybackStates.FAILED)
+  //           throw err
+  //         })
+  //       } else if (err instanceof VerificationError) {
+  //         this[EE].emitCommandStateChange({
+  //           id: command.id,
+  //           callstackIndex,
+  //           command,
+  //           state: CommandStates.FAILED,
+  //           message: err.message,
+  //           error: err as Error,
+  //         })
+  //         return await this._handleException(async () => {
+  //           this._setExitCondition(PlaybackStates.FAILED)
+  //           // focibly continuing verify commands
+  //           this.currentExecutingNode = (
+  //             this.currentExecutingNode as CommandNode
+  //           ).next
+  //           return await this._executionLoop()
+  //         })
+  //       } else {
+  //         this[EE].emitCommandStateChange({
+  //           id: command.id,
+  //           callstackIndex,
+  //           command,
+  //           state: CommandStates.ERRORED,
+  //           message: (err as Error).message,
+  //           error: err as Error,
+  //         })
+  //         return await this._handleException(() => {
+  //           this._setExitCondition(PlaybackStates.ERRORED)
+  //           throw err
+  //         })
+  //       }
+  //     }
+  //     this[EE].emitCommandStateChange({
+  //       id: command.id,
+  //       callstackIndex,
+  //       command,
+  //       state: result.skipped ? CommandStates.SKIPPED : CommandStates.PASSED,
+  //       message: undefined,
+  //     })
+  //     this.currentExecutingNode = result.next as CommandNode
+
+  //     return await this._executionLoop()
+  //   }
+  // }
   async _executionLoop(
     { ignoreBreakpoint }: { ignoreBreakpoint: boolean } = {
       ignoreBreakpoint: false,
@@ -435,7 +559,46 @@ export default class Playback {
 
       let result
       try {
-        result = await this._executeCommand(this.currentExecutingNode)
+        //console.log('commands details index', 0, command)
+        const targetsLength = command.targets?.length && command.targets.length > 0 ? command.targets.length : 1;
+       // console.log('targteslen',targetsLength)
+       try {
+        if(targetsLength >1){
+          result = await this._executeCommand(this.currentExecutingNode,0)
+        }
+        
+       } catch (error) {
+        console.log('err',error)
+       }
+        for(let i =0;i < targetsLength ; i++){
+
+          try {
+            if (this[state].stopping) {
+              return
+            } else if (this[state].pausing) {
+              await this._pause()
+              return await this._executionLoop({ ignoreBreakpoint: true })
+            }
+            result = await this._executeCommand(this.currentExecutingNode,i)
+            if(i>0){
+              const specialCases = ["first", "second","third"];
+
+              result['warning'] = `The command was executed using the ${specialCases[i] || (i + 1) + 'th'} locator.`;
+              
+            }
+            break;
+          } catch (error) {
+            if(i+1 === targetsLength && !this[state].stopping && !this[state].pausing ){
+              throw error
+            }else if(i+1 === targetsLength && this[state].stopping && this[state].pausing){
+               return
+            }
+          }
+         
+        }
+  
+       
+       // console.log('execute result', result)
       } catch (err) {
         // console.error('Execute error', err)
         if (err instanceof AssertionError) {
@@ -483,14 +646,15 @@ export default class Playback {
           })
         }
       }
+ 
       this[EE].emitCommandStateChange({
         id: command.id,
         callstackIndex,
         command,
-        state: result.skipped ? CommandStates.SKIPPED : CommandStates.PASSED,
-        message: undefined,
+        state: result?.skipped ? CommandStates.SKIPPED : CommandStates.PASSED,
+        message: result?.warning ? result.warning : undefined
       })
-      this.currentExecutingNode = result.next as CommandNode
+      this.currentExecutingNode = result?.next as CommandNode
 
       return await this._executionLoop()
     }
@@ -511,7 +675,8 @@ export default class Playback {
 
     let result
     try {
-      result = await this._executeCommand(commandNode)
+      // result = await this._executeCommand(commandNode)
+      result = await this._executeCommand(commandNode,0)
     } catch (err) {
       if (err instanceof AssertionError || err instanceof VerificationError) {
         this[EE].emitCommandStateChange({
@@ -543,11 +708,31 @@ export default class Playback {
     })
   }
 
-  async _executeCommand(commandNode: CommandNode) {
+  // async _executeCommand(commandNode: CommandNode) {
+  //   const { command } = commandNode
+  //   if (command.command === 'run') {
+  //     const result = await commandNode.execute(this.executor, {
+  //       executorOverride: this._run,
+  //     })
+
+  //     return result.skipped
+  //       ? result
+  //       : {
+  //           next: (this.playbackTree as PlaybackTree).startingCommandNode,
+  //           skipped: false,
+  //         }
+  //   } else {
+  //     const result = await commandNode.execute(this.executor)
+
+  //     return result
+  //   }
+  // }
+  async _executeCommand(commandNode: CommandNode, targetindex: number) {
     const { command } = commandNode
     if (command.command === 'run') {
-      const result = await commandNode.execute(this.executor, {
+      const result = await commandNode.execute(this.executor,targetindex, {
         executorOverride: this._run,
+     
       })
 
       return result.skipped
@@ -555,9 +740,10 @@ export default class Playback {
         : {
             next: (this.playbackTree as PlaybackTree).startingCommandNode,
             skipped: false,
+            warning: undefined
           }
     } else {
-      const result = await commandNode.execute(this.executor)
+      const result = await commandNode.execute(this.executor,targetindex) 
 
       return result
     }

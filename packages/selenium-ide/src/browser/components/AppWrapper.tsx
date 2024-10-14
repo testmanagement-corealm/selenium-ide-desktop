@@ -39,9 +39,11 @@ const AppWrapper: FC<AppWrapperProps> = ({ children }) => {
 
   return (
     <IntlProvider defaultLocale="en" messages={languageMap}>
+  
       {/* @ts-expect-error react-intl has funky versions */}
       <ThemeProvider theme={theme}>
         <CssBaseline />
+
         {children}
       </ThemeProvider>
     </IntlProvider>

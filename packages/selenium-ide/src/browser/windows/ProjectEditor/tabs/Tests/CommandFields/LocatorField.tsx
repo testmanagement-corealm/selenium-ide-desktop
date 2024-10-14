@@ -8,7 +8,8 @@ import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
 import capitalize from 'lodash/fp/capitalize'
 import React, { FC, useEffect } from 'react'
-import { updateField, updateFieldAutoComplete } from './utils'
+// import { updateField, updateFieldAutoComplete } from './utils'
+import {  updateFieldAutoComplete } from './utils'
 import { CommandArgFieldProps } from '../types'
 import languageMap from 'browser/I18N/keys'
 import { useIntl } from 'react-intl'
@@ -25,12 +26,19 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
   const fieldNames = (fieldName + 's') as PluralField
   const FieldName = capitalize(fieldName)
 
-  const updateTarget = updateField(fieldName)
+  // const updateTarget = updateField(fieldName)
   const updateTargetAutoComplete = updateFieldAutoComplete(fieldName)
   const [localValue, setLocalValue] = React.useState(command[fieldName])
-  const onChange = (e: any) => {
-    setLocalValue(e)
-    updateTarget(testID, command.id)(e)
+  // const onChange = (e: any) => {
+  //   setLocalValue(e)
+  //   updateTarget(testID, command.id)(e)
+  // }
+  const onChange = (e: any,value:any) => {
+
+    console.log('update target',value)
+    setLocalValue(value)
+    // updateTarget(testID, command.id)(e)
+    updateTargetAutoComplete(testID, command.id)(e, value)
   }
   const onChangeAutoComplete = (e: any, value: string) => {
     setLocalValue(value)
@@ -74,8 +82,11 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
             },
           },
         }}
+        // onChange={(_event: any, newValue: string | null) => {
+        //   onChange(newValue)
+        // }}
         onChange={(_event: any, newValue: string | null) => {
-          onChange(newValue)
+          onChange(_event,newValue)
         }}
         onContextMenu={() => {
           window.sideAPI.menus.open('textField')

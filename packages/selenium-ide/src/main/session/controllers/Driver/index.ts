@@ -379,6 +379,38 @@ export default class DriverController extends BaseController {
         if (driver) return await driver.takeScreenshot()
         return ''
     }
+    async setToken(newToken: string): Promise<void> {
+    // Set the token in the store
+    return new Promise((resolve, reject) => {
+        try {
+           this.session.store.set('token', newToken); // Assuming 'store' is your Store instance
+            resolve();
+        } catch (error) {
+            reject(error); // Handle any potential errors
+        }
+    });
+}
+async getToken(): Promise<string | null> {
+    return new Promise((resolve, reject) => {
+        try {
+            const token = this.session.store.get('token'); // Assuming 'store' is your Store instance
+            resolve(token || null);
+        } catch (error) {
+            reject(error); // Handle any potential errors
+        }
+    });
+}
+async clearToken(): Promise<void> {
+    // Clear the token from the store
+    return new Promise((resolve, reject) => {
+      try {
+        this.session.store.delete('token'); // Assuming 'store' is your Store instance
+        resolve();
+      } catch (error) {
+        reject(error); // Handle any potential errors
+      }
+    });
+}
 }
 
 

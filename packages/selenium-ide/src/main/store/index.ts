@@ -21,6 +21,7 @@ export interface StorageSchema {
   windowSizePlayback: [number, number];
   windowPositionPlayback: [number, number];
   userPrefs: UserPrefs;
+  token?: string; 
 }
 
 export default () => {
@@ -56,6 +57,7 @@ export default () => {
         PlaybackWindowController.y!
       ],
       userPrefs: defaultUserPrefs,
+      token: ''
     }
   });
   return store;

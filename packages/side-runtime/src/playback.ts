@@ -569,7 +569,10 @@ export default class Playback {
         
        } catch (error) {
         console.log('err',error)
+      
        }
+      console.log('execute result', result)
+      if(!result){
         for(let i =0;i < targetsLength ; i++){
 
           try {
@@ -582,7 +585,7 @@ export default class Playback {
             result = await this._executeCommand(this.currentExecutingNode,i)
             if(i>0){
               const specialCases = ["first", "second","third"];
-
+  
               result['warning'] = `The command was executed using the ${specialCases[i] || (i + 1) + 'th'} locator.`;
               
             }
@@ -596,9 +599,11 @@ export default class Playback {
           }
          
         }
+      }
+     
   
        
-       // console.log('execute result', result)
+     
       } catch (err) {
         // console.error('Execute error', err)
         if (err instanceof AssertionError) {

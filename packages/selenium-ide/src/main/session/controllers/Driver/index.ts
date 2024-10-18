@@ -258,7 +258,7 @@ export default class DriverController extends BaseController {
             })
             .usingServer(server)
             .forBrowser(browserName)
-        console.debug('Building driver for ' + browser)
+        console.debug('Building driver for1 ' + browser)
         const driver = await retry(
             async () => {
                 const result = await driverBuilder.build()
@@ -411,6 +411,39 @@ async clearToken(): Promise<void> {
       }
     });
 }
+async stopProcessonLogout(): Promise<null | string> {
+        this.stopped = true
+        await this.session.recorder.stop()
+        // await Promise.all(
+        //     this.session.playback.playbacks.map((playback) => playback.cleanup())
+        // )
+        await this.session.windows.closeAllPlaybackWindows()
+        // if (this.driverProcess) {
+        //     const browser =
+        //         this.session.store.get('browserInfo')?.browser ?? 'electron'
+        //     console.log('Stopping process for driver', browser)
+        //     const procKilled = await this.driverProcess.kill(9)
+        //     WebdriverDebugLog('Killed driver?', procKilled)
+        // }
+        return null
+    }
+async stopProcessonMenuclick(): Promise<null | string> {
+        this.stopped = true
+        // await this.session.recorder.stop()
+        // await Promise.all(
+        //     this.session.playback.playbacks.map((playback) => playback.cleanup())
+        // )
+        await this.session.windows.closeAllPlaybackWindows()
+        // if (this.driverProcess) {
+        //     const browser =
+        //         this.session.store.get('browserInfo')?.browser ?? 'electron'
+        //     console.log('Stopping process for driver', browser)
+        //     const procKilled = await this.driverProcess.kill(9)
+        //     WebdriverDebugLog('Killed driver?', procKilled)
+        // }
+        return null
+    }
 }
 
 
+    

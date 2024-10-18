@@ -6,6 +6,8 @@ import type { Shape as StopProcess } from './stopProcess'
 import type { Shape as TakeScreenshot } from './takeScreenshot'
 import type { Shape as SetToken } from './setToken'; // Import the type
 import type { Shape as GetToken } from './getToken'
+import type {Shape as StropProcessonLogout} from './stopProcessonLogout'
+import type{Shape as StopProcessonMenuclick} from './stopProcessonMenuclick'
 
 import * as download from './download'
 import * as listBrowsers from './listBrowsers'
@@ -15,6 +17,8 @@ import * as stopProcess from './stopProcess'
 import * as takeScreenshot from './takeScreenshot'
 import * as setToken from './setToken'; // Import the module
 import * as getToken from './getToken'
+import * as stopProcessonLogout from './stopProcessonLogout'
+import * as stopProcessonMenuclick from './stopProcessonMenuclick'
 
 export const commands = {
   download,
@@ -24,7 +28,9 @@ export const commands = {
   stopProcess,
   takeScreenshot,
    setToken,
-   getToken
+   getToken,
+   stopProcessonLogout,
+   stopProcessonMenuclick
 }
 
 /**
@@ -40,4 +46,6 @@ export type Shape = {
   takeScreenshot: TakeScreenshot
   setToken: SetToken
   getToken:GetToken 
+  stopProcessonLogout:StropProcessonLogout
+  stopProcessonMenuclick:StopProcessonMenuclick
 }

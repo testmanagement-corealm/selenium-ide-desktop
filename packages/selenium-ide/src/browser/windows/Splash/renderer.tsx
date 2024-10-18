@@ -19,7 +19,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 const ProjectEditor = () => {
   const [logPath, setLogPath] = useState<string>('...')
   const [recentProjects, setRecentProjects] = useState<string[]>([])
-  const [loginOpen, setLoginOpen] = useState<boolean>(true)
+  const [loginOpen, setLoginOpen] = useState<boolean>(false)
 // const [loginOpen, setLoginOpen] = useState<boolean>(true);
 const [errorMessage, setErrorMessage] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

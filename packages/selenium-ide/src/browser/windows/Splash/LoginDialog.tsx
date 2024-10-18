@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -21,6 +21,8 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose, onLogin, error
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+
   const handleLogin = () => {
     onLogin(username, password);
   };
@@ -34,13 +36,41 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose, onLogin, error
     onClose();
     console.log(reason)
   };
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      if (username && password) {
+        handleLogin(); // Call login function if both fields are filled
+      } else {
+        passwordRef.current?.focus(); // Move focus to password field if in username field
+      }
+    }
+  };
+  const stopOverlay=async()=>{
+    try{
+           await window.sideAPI.driver.stopProcessonMenuclick();
+    }catch(err){
+      console.log(err)
+    }
+  }
+useEffect(() => {
+    stopOverlay();
+    // Focus on the username input when the dialog opens
+    const usernameInput = document.getElementById('username-input');
+    usernameInput?.focus();
+  }, [open]);
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        style: { zIndex: 99999999 },
+      }}
+    >
       <DialogTitle>Login</DialogTitle>
       <DialogContent>
-      
-        <TextField
+           <TextField
+          id="username-input"
           autoFocus
           margin="dense"
           label="Username"
@@ -48,28 +78,32 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose, onLogin, error
           fullWidth
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <TextField
-  margin="dense"
-  label="Password"
-  type={showPassword ? 'text' : 'password'} // Use showPassword to toggle
-  fullWidth
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton
-          onClick={() => setShowPassword((prev) => !prev)} // Toggle visibility
-          edge="end"
-        >
-          {showPassword ? <VisibilityOff /> : <Visibility />} 
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
-          {errorMessage && (
+          margin="dense"
+          label="Password"
+          type={showPassword ? 'text' : 'password'} // Use showPassword to toggle
+          fullWidth
+          value={password}
+          
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
+          inputRef={passwordRef}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword((prev) => !prev)} // Toggle visibility
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        {errorMessage && (
           <Typography variant="body2" color="error" style={{ marginBottom: '16px' }}>
             {errorMessage}
           </Typography>

@@ -30,7 +30,7 @@ const PlaybackControls: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // Track login state
   const [fullName, setFullName] = useState<string>(''); // Store the full name of the user
-  const [loginOpen, setLoginOpen] = useState<boolean>(true); // Control the login dialog
+  const [loginOpen, setLoginOpen] = useState<boolean>(false); // Control the login dialog
   const [errorMessage, setErrorMessage] = useState<string>(''); // Store error messages
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,6 +43,7 @@ const PlaybackControls: React.FC = () => {
 
   const handleLogout = async () => {
     await window.sideAPI.driver.setToken(''); // Clear the token
+   await window.sideAPI.driver.stopProcessonLogout()
     setIsLoggedIn(false); // Update login state
     setFullName('Guest'); // Reset full name
     handleMenuClose();
@@ -50,6 +51,7 @@ const PlaybackControls: React.FC = () => {
 
   const handleLogin = async (username: string, password: string) => {
     setErrorMessage('');
+
     const formData = new FormData();
     formData.append('email', username);
     formData.append('password', password);
@@ -70,6 +72,7 @@ const PlaybackControls: React.FC = () => {
         setFullName(`${userDetails.firstname} ${userDetails.lastname}`);
         setIsLoggedIn(true);
         setLoginOpen(false); // Close the login dialog
+        handleMenuClose();
       } else {
         const userDetails = await response.json();
         console.log(userDetails);
@@ -86,6 +89,7 @@ const PlaybackControls: React.FC = () => {
 
   const fetchTokens = async () => {
     try {
+    
       const data = await window.sideAPI.driver.getToken();
       console.log("FROM electron store", data);
       return data;
@@ -96,6 +100,7 @@ const PlaybackControls: React.FC = () => {
   };
 
   useEffect(() => {
+    
     const fetchToken = async () => {
       try {
         const token = await fetchTokens(); // Ensure this returns a token or undefined

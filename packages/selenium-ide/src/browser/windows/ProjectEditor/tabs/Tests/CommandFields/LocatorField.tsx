@@ -13,6 +13,7 @@ import {  updateFieldAutoComplete } from './utils'
 import { CommandArgFieldProps } from '../types'
 import languageMap from 'browser/I18N/keys'
 import { useIntl } from 'react-intl'
+import { LocatorFields } from '@seleniumhq/side-api'
 
 type PluralField = 'targets' | 'values'
 
@@ -28,7 +29,7 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
 
   // const updateTarget = updateField(fieldName)
   const updateTargetAutoComplete = updateFieldAutoComplete(fieldName)
-  const [localValue, setLocalValue] = React.useState(command[fieldName])
+  const [_localValue, setLocalValue] = React.useState(command[fieldName])
   // const onChange = (e: any) => {
   //   setLocalValue(e)
   //   updateTarget(testID, command.id)(e)
@@ -38,15 +39,16 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
     console.log('update target',value)
     setLocalValue(value)
     // updateTarget(testID, command.id)(e)
-    updateTargetAutoComplete(testID, command.id)(e, value)
+    updateTargetAutoComplete(testID, command.id,command)(e, value)
   }
   const onChangeAutoComplete = (e: any, value: string) => {
     setLocalValue(value)
-    updateTargetAutoComplete(testID, command.id)(e, value)
+    updateTargetAutoComplete(testID, command.id,command)(e, value)
   }
   useEffect(() => {
     setLocalValue(command[fieldName])
-  }, [command.id])
+   // console.log('commandfile',command[fieldName], fieldName,command )
+  }, [command.id, command.target])
 
   // 处理label标签
   const handleLabel = (value: string) => {
@@ -74,7 +76,7 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
         className="flex-1"
         disabled={disabled}
         freeSolo
-        inputValue={localValue || ''}
+        inputValue={command[fieldName as LocatorFields]}
         componentsProps={{
           paper: {
             sx: {
@@ -108,7 +110,7 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
         )}
         size="small"
         text-overflow="ellipsis"
-        value={localValue || ''}
+        value={command[fieldName as LocatorFields]}
       />
       <IconButton
         className="ms-4"

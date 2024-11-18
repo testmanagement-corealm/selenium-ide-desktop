@@ -98,6 +98,25 @@ export default class Recorder {
     actualFrameLocation: string | null = null,
     overrideRecorder = false
   ) {
+    let description =''
+    // console.log('event',event)
+    if (event instanceof Event) {
+      const clickedElement = event.target as HTMLElement; // Or HTMLInputElement if you expect it to be an input field
+
+      // console.log('clickedelement', clickedElement)
+      if (clickedElement) {
+       
+          if (clickedElement.innerText) {
+            description += clickedElement.innerText; // Visible text content
+          } else if (clickedElement.title) {
+            description += clickedElement.title; // Title attribute
+          } else if (clickedElement.id) {
+            description += clickedElement.id; // Fallback to id
+          }
+        
+      }
+      console.log('description',description)
+    }
     let newCommand: RecordNewCommandInput = {
       command,
       target,
@@ -118,7 +137,24 @@ export default class Recorder {
           newCommand = result.command
       }
     }
-    window.sideAPI.recorder.recordNewCommand(newCommand, overrideRecorder)
+
+    let formattedString=''
+   if(description){
+    try {
+        const cleanedString = description.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+
+          // Limit the string to 100 characters
+          let limitedString = cleanedString.substring(0, 100);
+          let cmd = command.charAt(0).toUpperCase() + command.slice(1).replace(/([A-Z])/g, ' $1').trim();
+           formattedString = `Perform ${cmd} on ${limitedString}`
+       
+    } catch (error) {
+      console.log(error)
+    }
+   }
+
+  // console.log("formattedString",formattedString,newCommand);
+    window.sideAPI.recorder.recordNewCommand(newCommand, overrideRecorder,formattedString)
   }
 
   setWindowHandle(event: ExpandedMessageEvent) {

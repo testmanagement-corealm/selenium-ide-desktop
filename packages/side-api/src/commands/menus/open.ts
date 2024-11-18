@@ -9,6 +9,7 @@ export type MenuNames =
   | 'projectView'
   | 'testManager'
   | 'textField'
+  | 'checkboxField'
 /**
  * Opens one of our available menu types. Types are governed
  * by Selenium IDE internals (sorry, no custom menus -_-)

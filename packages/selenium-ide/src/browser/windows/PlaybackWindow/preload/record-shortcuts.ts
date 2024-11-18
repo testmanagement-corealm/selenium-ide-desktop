@@ -40,6 +40,17 @@ async function onContextMenu(event: any) {
         true
       )
       break
+    case 'Get Text':
+      recorder.record(
+        event,
+        'getText',
+        targets,
+        el.innerText,
+        false,
+        null,
+        true
+      )
+      break    
     case 'Record Wait For Element Editable':
       recorder.record(
         event,

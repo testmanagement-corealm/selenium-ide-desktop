@@ -94,21 +94,21 @@ export class CommandNode {
   }
 
   shouldSkip(): boolean {
-    // return Boolean(this.command.skip || this.command.command.startsWith('//'))
-        // Check if command should be skipped
-        const shouldSkip = Boolean(
-          this.command.skip || 
-          this.command.command.startsWith('//') || 
-          this.command.command === 'step' ||
-          this.command.command ===  'extractData'|| this.command.command ===  'GenerateDate'||
-          this.command.command === 'ScrollToPosition' || this.command.command === "RightClick"||
-           this.command.command === 'Createteststep'|| this.command.command ===  'Waituntilset'||
-           this.command.command ===  'createVariable' || this.command.command === 'getText'||
-           this.command.command ===  'mouseHover' || this.command.command ===  'webRtcOpen'||
-           this.command.command ===  'thinkTime'|| this.command.command ===  'scrollTo'
-        );
+    return Boolean(this.command.skip || this.command.command.startsWith('//'))
+        // // Check if command should be skipped
+        // const shouldSkip = Boolean(
+        //   this.command.skip || 
+        //   this.command.command.startsWith('//') || 
+        //   this.command.command === 'step' ||
+        //   this.command.command ===  'extractData'|| this.command.command ===  'GenerateDate'||
+        //   this.command.command === 'ScrollToPosition' || this.command.command === "RightClick"||
+        //    this.command.command === 'Createteststep'|| this.command.command ===  'Waituntilset'||
+        //    this.command.command ===  'createVariable' || this.command.command === 'getText'||
+        //    this.command.command ===  'mouseHover' || this.command.command ===  'webRtcOpen'||
+        //    this.command.command ===  'thinkTime'|| this.command.command ===  'scrollTo'
+        // );
       
-        return shouldSkip;
+        // return shouldSkip;
   }
 
   async execute(

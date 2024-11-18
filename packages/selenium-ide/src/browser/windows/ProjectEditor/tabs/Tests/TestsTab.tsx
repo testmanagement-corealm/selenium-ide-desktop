@@ -101,6 +101,8 @@ const TestsTab: React.FC = () => {
         disabled={disabled}
         selectedCommandIndexes={selectedCommandIndexes}
         testID={activeTestID}
+        commandList={activeTest.commands}
+      
       />
     </Box>
   )

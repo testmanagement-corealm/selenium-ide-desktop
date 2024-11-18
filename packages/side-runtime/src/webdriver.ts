@@ -38,6 +38,8 @@ import {
   WindowSwitchedHookInput,
 } from './types'
 import { inspect } from 'util'
+import { format, addDays, subDays } from 'date-fns';
+
 
 const {
   version: SeleniumWebdriverVersion,
@@ -88,6 +90,10 @@ export interface WebDriverExecutorCondEvalResult {
   value: boolean
 }
 
+interface Props {
+  defaultValue: string;
+  formatvalue: string;
+}
 export interface BeforePlayHookInput {
   driver: WebDriverExecutor
 }
@@ -286,6 +292,39 @@ export default class WebDriverExecutor {
     // TODO: check if there are commands that will succeed if we always return true
     return true
   }
+   generateAlphanumeric(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    
+    // Loop to generate the random string of the specified length
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+    
+    return result;
+  }
+   processDate = ({ defaultValue, formatvalue }: Props): string => {
+    let generatedDate: Date = new Date();
+  
+    if (defaultValue && defaultValue.trim() !== '') {
+      // Check if defaultValue starts with "-" indicating subtraction
+      if (defaultValue.startsWith('-')) {
+        const daysToSubtract: number = parseInt(defaultValue.slice(1), 10);
+        generatedDate = subDays(new Date(), daysToSubtract);
+      } else {
+        const daysToAdd: number = parseInt(defaultValue, 10);
+        generatedDate = addDays(new Date(), daysToAdd);
+      }
+    }
+  
+    // Format the generated date using the provided format
+    const value: string = format(generatedDate, formatvalue);
+  
+    console.log('Formatted date:', value);
+  
+    return value;
+  }
 
   name(command: string) {
     if (!command) {
@@ -389,6 +428,48 @@ export default class WebDriverExecutor {
     const [width, height] = widthXheight.split('x').map((v) => parseInt(v))
     await this.driver.manage().window().setRect({ width, height })
   }
+  async doStep() {
+   console.log('step command executed')
+  }
+   async doCreateteststep(){
+    console.log('create test step executed')
+   }
+   async doGetText(){
+    console.log('get text step executed')
+   }
+   async doCreateVariable(  variableName: string,
+    value: string,
+    commandObject: Partial<CommandShape> = {}){
+    console.log('create variable step executed')
+    console.log('locator',variableName)
+    console.log('optionLocator',value)
+    console.log('commandObject',commandObject)
+    let dynamicval = this.generateAlphanumeric(commandObject.dynamicValueLen || 22)
+    console.log('dynamicval',dynamicval)
+    let newVal = `${value}${dynamicval}`
+    console.log('newval',newVal)
+    this.variables.set(variableName,newVal)
+   }
+   async doGenerateDate(){
+    console.log('generate date test step executed')
+    // Example usage
+    const defaultValue = '-5'; // Example input: subtract 5 days
+    const formatvalue = 'yyyy-MM-dd'; // Example format
+
+    const formattedDate = this.processDate({ defaultValue, formatvalue });
+    console.log(formattedDate); // Output formatted date string
+   }
+   async doExtractData(){
+    console.log('extract data step executed')
+   }
+
+  async doWebrtcOpen(url: string) {
+    await this.driver.get(absolutifyUrl(url, this.baseUrl as string))
+  }
+  
+  async doWaituntilset(){
+    console.log('wait until step executed')
+   }
 
   async doSelectWindow(handleLocator: string) {
     const prefix = 'handle='
@@ -550,6 +631,83 @@ export default class WebDriverExecutor {
     )
     await element.click()
   }
+  async doScrollTo(
+    locator: string,
+    _?: string,
+    commandObject: Partial<CommandShape> = {}
+  ) {
+    const element = await this.waitForElementVisible(
+      locator,
+      this.implicitWait,
+      commandObject.targetFallback,
+      commandObject.targets,
+      commandObject.fallbackTargets
+    )
+    await this.driver.executeScript('arguments[0].scrollIntoView(true);',element)
+
+  }
+  async doScrollToPosition(
+    locator: string,
+    value: string,
+    commandObject: Partial<CommandShape> = {}
+  ) {
+    console.log('scoll to position value', value)
+    const element = await this.waitForElementVisible(
+      locator,
+      this.implicitWait,
+      commandObject.targetFallback,
+      commandObject.targets,
+      commandObject.fallbackTargets
+    )
+  
+      await this.driver.executeScript('arguments[0].scrollTo(0,arguments[1]);',element,value)
+
+    
+
+  }
+  async  doMouseHover(
+    locator: string,
+    _?: string,
+    commandObject: Partial<CommandShape> = {}
+  ) {
+    console.log('commandobj tar',commandObject.targets)
+    const element = await this.waitForElementVisible(
+      locator,
+      this.implicitWait,
+      commandObject.targetFallback,
+      commandObject.targets,
+      commandObject.fallbackTargets
+    )
+    console.log('ele',element)
+  
+      await this.driver.actions({bridge: true}).move({origin: element}).perform();
+    
+
+  }
+
+
+  async doRightClick(
+    locator: string,
+    value: string,
+    commandObject: Partial<CommandShape> = {}
+  ) {
+    console.log('scoll to position value', value)
+    const element = await this.waitForElementVisible(
+      locator,
+      this.implicitWait,
+      commandObject.targetFallback,
+      commandObject.targets,
+      commandObject.fallbackTargets
+    )
+  
+      await this.driver.executeScript(`const el = arguments[0];
+        const eventContextMenu = new MouseEvent('contextmenu', {
+            bubbles: true,
+          });
+        el.dispatchEvent(eventContextMenu);`, element)
+  }
+
+
 
   async doClickAt(
     locator: string,
@@ -1559,6 +1717,44 @@ WebDriverExecutor.prototype.doSetWindowSize = composePreprocessors(
   WebDriverExecutor.prototype.doSetWindowSize
 )
 
+WebDriverExecutor.prototype.doStep = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doStep
+)
+WebDriverExecutor.prototype.doCreateteststep = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doCreateteststep
+)
+
+WebDriverExecutor.prototype.doGetText = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doGetText
+)
+WebDriverExecutor.prototype.doCreateVariable = composePreprocessors(
+  interpolateString,
+  interpolateString,
+  {
+    targetFallback: preprocessArray(interpolateString),
+    valueFallback: preprocessArray(interpolateString),
+  },
+  WebDriverExecutor.prototype.doCreateVariable
+)
+WebDriverExecutor.prototype.doGenerateDate = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doGenerateDate
+)
+WebDriverExecutor.prototype.doExtractData = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doExtractData
+)
+WebDriverExecutor.prototype.doWebrtcOpen = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doWebrtcOpen
+)
+WebDriverExecutor.prototype.doWaituntilset = composePreprocessors(
+  interpolateString,
+  WebDriverExecutor.prototype.doWaituntilset
+)
 WebDriverExecutor.prototype.doSelectWindow = composePreprocessors(
   interpolateString,
   WebDriverExecutor.prototype.doSelectWindow
@@ -1609,12 +1805,39 @@ WebDriverExecutor.prototype.doUncheck = composePreprocessors(
   WebDriverExecutor.prototype.doUncheck
 )
 
+WebDriverExecutor.prototype.doScrollTo = composePreprocessors(
+  interpolateString,
+  interpolateString,
+  { targetFallback: preprocessArray(interpolateString) },
+  WebDriverExecutor.prototype.doScrollTo
+)
+WebDriverExecutor.prototype.doScrollToPosition = composePreprocessors(
+  interpolateString,
+  interpolateString,
+  { targetFallback: preprocessArray(interpolateString) },
+  WebDriverExecutor.prototype.doScrollToPosition
+)
+WebDriverExecutor.prototype.doMouseHover = composePreprocessors(
+  interpolateString,
+  interpolateString,
+  { targetFallback: preprocessArray(interpolateString) },
+  WebDriverExecutor.prototype.doMouseHover
+)
+
+WebDriverExecutor.prototype.doRightClick = composePreprocessors(
+  interpolateString,
+  interpolateString,
+  { targetFallback: preprocessArray(interpolateString) },
+  WebDriverExecutor.prototype.doRightClick
+)
+
 WebDriverExecutor.prototype.doClick = composePreprocessors(
   interpolateString,
   interpolateString,
   { targetFallback: preprocessArray(interpolateString) },
   WebDriverExecutor.prototype.doClick
 )
+
 
 WebDriverExecutor.prototype.doClickAt = composePreprocessors(
   interpolateString,
@@ -1735,6 +1958,8 @@ WebDriverExecutor.prototype.doType = composePreprocessors(
   { targetFallback: preprocessArray(interpolateString) },
   WebDriverExecutor.prototype.doType
 )
+
+
 
 WebDriverExecutor.prototype.doSendKeys = composePreprocessors(
   interpolateString,

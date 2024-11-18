@@ -23,6 +23,7 @@ const fileMenuTree = {
   recentProjects: 'Recent Projects',
   saveProject: 'Save Project',
   saveProjectAs: 'Save Project As...',
+  sendtoXT:'Send to XT'
 }
 
 const editMenuTree = {

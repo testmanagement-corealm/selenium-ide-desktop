@@ -78,7 +78,9 @@ export interface BaseListener<ARGS extends VariadicArgs, RESULT = void> {
 export type EventListenerParams<LISTENER extends BaseListener<any>> =
   Parameters<Parameters<LISTENER['addListener']>[0]>
 
-export type LocatorFields = 'target' | 'value'
+export type LocatorFields = 'target' | 'value' | 'description' 
+
+
 
 export type RecordNewCommandInput = Omit<
   CommandShape,
@@ -89,4 +91,13 @@ export type RecordNewCommandInput = Omit<
   insertBeforeLastCommand?: boolean
   frameLocation?: string
   winHandleId?: string
+  continueExecution?: boolean,
+  skiperror?: boolean,
+  useVariable?: boolean,
+  validationType?: string,
+  dynamicValue?: boolean,
+  dynamicValueLen?: number,
+  variableName?: string,
+  defaultValue?: string,
+  description? : string
 }

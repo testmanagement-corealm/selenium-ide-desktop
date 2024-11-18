@@ -25,6 +25,7 @@ const fileMenuTree = {
   recentProjects: '最近使用项目',
   saveProject: '保存项目',
   saveProjectAs: '项目另存为...',
+  sendtoXT: '项目另存为...',
 }
 // 编辑菜单
 const editMenuTree = {

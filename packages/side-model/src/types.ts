@@ -18,6 +18,15 @@ export interface CommandShape {
   opensWindow?: boolean
   windowHandleName?: string
   windowTimeout?: number
+  continueExecution?: boolean,
+  skiperror?: boolean,
+  useVariable?: boolean,
+  validationType?: string,
+  dynamicValue?: boolean,
+  dynamicValueLen?: number,
+  variableName?: string,
+  defaultValue?: string,
+  description? : string,
 }
 
 export interface SnapshotTestShape {

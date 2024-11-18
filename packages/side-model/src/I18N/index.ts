@@ -6,7 +6,7 @@ type I18NModelDataShape = {
   Commands: typeof Commands
 }
 
-const supportedLanguages = ['en', 'zh'] as const
+const supportedLanguages = ['en'] as const
 
 type SupportedLanguages = typeof supportedLanguages[number]
 

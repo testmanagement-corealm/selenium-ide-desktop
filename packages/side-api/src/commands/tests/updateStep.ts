@@ -24,6 +24,7 @@ export const mutator: Mutator<Shape> = (
     stepID,
     session.project.tests[testIndex]
   )
+  // console.log('coomad',step)
   const updatedSession = update(
     `project.tests[${testIndex}].commands[${stepIndex}]`,
     (command: CommandShape) => merge(command, step),

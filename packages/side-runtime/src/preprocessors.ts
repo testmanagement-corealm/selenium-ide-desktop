@@ -116,41 +116,93 @@ export function preprocessArray(interpolator: Interpolator) {
     ])
   }
 }
-
 export function interpolateString(value: string, variables: Variables) {
+  console.log('value', value)
+  console.log('variables', variables)
+
   if (!value) return ''
-  value = value.replace(/^\s+/, '')
-  value = value.replace(/\s+$/, '')
+
+  // Trim whitespace at the beginning and end of the string
+  value = value.replace(/^\s+/, '').replace(/\s+$/, '')
+
   let r2
   let parts = []
-  if (/\$\{/.exec(value)) {
-    const regexp = /\$\{(.*?)\}/g
-    let lastIndex = 0
-    while ((r2 = regexp.exec(value))) {
-      if (variables.has(r2[1])) {
-        if (r2.index - lastIndex > 0) {
-          parts.push(string(value.substring(lastIndex, r2.index)))
-        }
-        parts.push(variables.get(r2[1]))
-        lastIndex = regexp.lastIndex
-      } else if (r2[1] == 'nbsp') {
-        if (r2.index - lastIndex > 0) {
-          parts.push(
-            variables.get(string(value.substring(lastIndex, r2.index)))
-          )
-        }
-        parts.push(nbsp)
-        lastIndex = regexp.lastIndex
+  
+  // Use a regular expression to match both ${...} and {{...}} patterns
+  const regexp = /(\$\{(.*?)\}|\{\{(.*?)\}})/g
+  let lastIndex = 0
+
+  // Loop through the matches in the string
+  while ((r2 = regexp.exec(value))) {
+    // let _matched = r2[0]   // Full matched string, like ${i} or {{i}}
+    let key = r2[2] || r2[3]  // Either the second or third capture group depending on which placeholder
+
+    if (variables.has(key)) {
+      // Add substring between previous match and current match to parts
+      if (r2.index - lastIndex > 0) {
+        parts.push(value.substring(lastIndex, r2.index))
       }
+      
+      // Add the value from variables for the matched key
+      parts.push(variables.get(key))
+      lastIndex = regexp.lastIndex
     }
-    if (lastIndex < value.length) {
-      parts.push(string(value.substring(lastIndex, value.length)))
+    // Special handling for `nbsp` if necessary
+    else if (key === 'nbsp') {
+      if (r2.index - lastIndex > 0) {
+        parts.push(value.substring(lastIndex, r2.index))
+      }
+      parts.push(nbsp) // Add the non-breaking space value
+      lastIndex = regexp.lastIndex
     }
-    return parts.map(String).join('')
-  } else {
-    return string(value)
   }
+
+  // Append any remaining text after the last match
+  if (lastIndex < value.length) {
+    parts.push(value.substring(lastIndex))
+  }
+
+  // Join the parts and return the final string
+  return parts.join('')
 }
+
+
+// export function interpolateString(value: string, variables: Variables) {
+//   console.log('value', value)
+//   console.log('variables',variables)
+//   if (!value) return ''
+//   value = value.replace(/^\s+/, '')
+//   value = value.replace(/\s+$/, '')
+//   let r2
+//   let parts = []
+//   if (/\$\{/.exec(value)) {
+//     const regexp = /\$\{(.*?)\}/g
+//     let lastIndex = 0
+//     while ((r2 = regexp.exec(value))) {
+//       if (variables.has(r2[1])) {
+//         if (r2.index - lastIndex > 0) {
+//           parts.push(string(value.substring(lastIndex, r2.index)))
+//         }
+//         parts.push(variables.get(r2[1]))
+//         lastIndex = regexp.lastIndex
+//       } else if (r2[1] == 'nbsp') {
+//         if (r2.index - lastIndex > 0) {
+//           parts.push(
+//             variables.get(string(value.substring(lastIndex, r2.index)))
+//           )
+//         }
+//         parts.push(nbsp)
+//         lastIndex = regexp.lastIndex
+//       }
+//     }
+//     if (lastIndex < value.length) {
+//       parts.push(string(value.substring(lastIndex, value.length)))
+//     }
+//     return parts.map(String).join('')
+//   } else {
+//     return string(value)
+//   }
+// }
 
 export function interpolateScript(script: string, variables: Variables) {
   let value = script.replace(/^\s+/, '').replace(/\s+$/, '')

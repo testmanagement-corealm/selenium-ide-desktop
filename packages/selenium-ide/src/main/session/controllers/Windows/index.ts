@@ -71,12 +71,16 @@ const windowLoaderFactoryMap: WindowLoaderFactoryMap = Object.fromEntries(
           } else {
             win.loadFile(join(__dirname, `${filename}.html`))
           }
+       
+    
           return win
         }
       return [key, windowLoader]
     }
   )
 )
+
+
 
 const makeWindowLoaders = (session: Session): WindowLoaderMap =>
   Object.fromEntries(
@@ -97,6 +101,20 @@ export default class WindowsController extends BaseController {
 
   constructor(session: Session) {
     super(session)
+     // Set up the IPC listener for messages from the renderer
+     ipcMain.on('message-from-renderer', async (_event, arg) => {
+      console.log('Received message from renderer:', arg);
+
+      this.playbackWindows.forEach((playbackWindow) => {
+        if (playbackWindow) {
+          playbackWindow.show();
+          console.log(`Playback window shown`);
+        } else {
+          console.log('No playback window found');
+        }
+      });
+    });
+
     ipcMain.handle('show-shortcut-menu', async (event) => {
       if (session.state.state.status != 'recording') {
         return null
@@ -127,6 +145,7 @@ export default class WindowsController extends BaseController {
             submenu: template,
           },
         ])
+       
         menu.once('menu-will-close', () => {
           // execute after menu click-function trigger
           setTimeout(() => {
@@ -262,6 +281,18 @@ export default class WindowsController extends BaseController {
     return this.playbackWindows.find((win) => win.isVisible()) ?? null
   }
 
+  async opensendtoxt(){
+    console.log('test function')
+    this.playbackWindows.forEach((playbackWindow) => {
+      if (playbackWindow) {
+        playbackWindow.hide();
+        console.log(`Playback window hide`);
+      } else {
+        console.log('No playback window found');
+      }
+    });
+    this.windows['project-editor'].webContents.send('sendtoxt', 'sendtoxt')
+  }
   async open(
     name: string,
     opts: BrowserWindowConstructorOptions = {}
@@ -786,3 +817,5 @@ export default class WindowsController extends BaseController {
     this.closeAllPlaybackWindows()
   }
 }
+
+

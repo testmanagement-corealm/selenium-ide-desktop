@@ -25,6 +25,90 @@ export interface CommandType {
 }
 
 const commands = {
+  extractData:
+  {
+    name: 'Extract Data',
+    description: 'Extract Data from the locator',
+    target: ArgTypes.locator,
+    value: ArgTypes.pattern,
+  },
+  GenerateDate:
+  {
+    name: 'Generate Date',
+    value: ArgTypes.text,
+    description: `Generates a date`,
+    target: ArgTypes.variableName,
+  },
+  RightClick:
+  {
+    name: 'Right Click',
+    value: ArgTypes.text,
+    description: `Right Clicks on a target element (e.g., a link, button, checkbox, or radio button).`,
+    target: ArgTypes.locator,
+  },
+  Createteststep:
+  {
+    name: 'Create step item',
+    description: 'Create a new test step',
+    value: ArgTypes.text,
+    target: ArgTypes.locator,
+  },
+  Waituntilset:
+  {
+    name: 'Wait until set',
+    description: 'Wait until a value set into a variable,will repeat for 1000 times.You can override this default by specifying a number in the value input field of the command. ',
+    target: ArgTypes.variableName,
+    value: ArgTypes.text,
+  },
+  createVariable:
+    {
+      name: 'Create Variable',
+      description: 'Create variable',
+      target: ArgTypes.variableName,
+      value: ArgTypes.variableValue,
+    },
+  getText:
+  {
+    name: 'Get Text',
+    description: 'Read selected locator value',
+    target: ArgTypes.locator,
+    value: ArgTypes.variableName,
+  },
+  mouseHover:
+  {
+    name: 'Mouse Hover (Body)',
+    description: 'Simulate mouse movement',
+    value: ArgTypes.text,
+    target: ArgTypes.locator,
+  },
+  scrollTo:
+  {
+    name: 'Scroll To',
+    description: `Scrolls till visibilty of element.`,
+    target: ArgTypes.locator,
+    value: ArgTypes.value,
+  },
+  ScrollToPosition:
+  {
+    name: 'Scroll To Position',
+    description: `ScrollTo on a target element.`,
+    target: ArgTypes.locator,
+    value: ArgTypes.value,
+  },
+  webrtcOpen: {
+    name: 'Open Rtc',
+    description: 'Open Video Url (Webrtc)',
+    target: ArgTypes.locator,
+    value: ArgTypes.value,
+  },
+  step: {
+    name: 'Create Step',
+    description: 'Create a new Step.For Azure status update please provide the testplan,testsuite and testcase id respectively in the Azure Test Case ID field(eg: 415,789,658)',
+    target: ArgTypes.locator,
+    value: ArgTypes.value,
+  },
+
+
   acceptAlert: {
     name: 'accept alert',
     description: `Affects a currently showing alert. This 

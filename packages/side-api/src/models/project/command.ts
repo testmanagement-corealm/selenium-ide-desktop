@@ -13,4 +13,15 @@ export const command: CommandShape = {
   target: '',
   targets: [],
   value: '',
+  continueExecution: false,
+  skiperror: false,
+  useVariable: false,
+  validationType: "String",
+  dynamicValue: false,
+  dynamicValueLen: 22,
+  variableName: "",
+  defaultValue: "",
+  description:'',
+
+
 }

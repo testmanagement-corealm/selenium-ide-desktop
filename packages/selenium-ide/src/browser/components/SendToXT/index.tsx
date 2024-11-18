@@ -81,14 +81,15 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     () => () => {}
   )
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-
+  const [resumesaving, setResumeSaving] = React.useState<boolean>(false)
   const isFormValid = () => {
     return (
       testName &&
       description &&
       locatoryStrategy &&
       project &&
-      moduleItems.length > 0
+      moduleItems.length > 0 &&
+      selectedModule.length >0
     )
   }
 
@@ -133,101 +134,26 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
   const checkstepunique = async () => {
     setReturnMessage(null)
     let updatedModules = [...selectedModule]
-    const formData = new FormData()
-    formData.append('projectId', project)
-    formData.append('modules', JSON.stringify(selectedModule))
-    let response = await fetch(`${base_url}functional/moduleValidation`, {
-      method: 'POST',
-      headers: {
-        Authorization: token,
-      },
-      body: formData,
-    })
-    if (response.status == 200) {
-      updatedModules = await response.json()
-      setSelectedModule(updatedModules)
+    console.log('resumesaving', resumesaving)
+    if(!resumesaving){
+      const formData = new FormData()
+      formData.append('projectId', project)
+      formData.append('modules', JSON.stringify(selectedModule))
+      let response = await fetch(`${base_url}functional/moduleValidation`, {
+        method: 'POST',
+        headers: {
+          Authorization: token,
+        },
+        body: formData,
+      })
+      if (response.status == 200) {
+        updatedModules = await response.json()
+        setSelectedModule(updatedModules)
+      }
     }
-
-    // do api for unique check of step name
-    // update return object in updated Modules
-
-    // if (updatedModules.length > 2) {
-    //   // Add exists: true to the first selected module
-    //   updatedModules[0] = { ...updatedModules[0], exists: true };
-    //   setSelectedModule(updatedModules)
-    // }
     return updatedModules
   }
 
-  // const savemodule = async()=>{
-  //   let data =[]
-  //   for(let i =0;i< selectedModule.length;i++){
-  //       let cmds =await collectCommandsUpToNextStep(selectedModule[i].id)
-  //       let obj={
-  //           'modulename':selectedModule[i].value,
-  //           'moduledescription':selectedModule[i].comment,
-  //           'moduledetails': cmds
-
-  //       }
-  //       data.push(obj)
-  //   }
-
-  //   console.log('create module job', data)
-  //   const ids = selectedModule.map(obj => obj.id);
-  //   const formData = new FormData()
-  //   formData.append('projectId', project)
-  //   formData.append('modules',JSON.stringify(data))
-  //   let  response = await fetch(`${base_url}functional/exportModules`, {
-  //      method: 'POST',
-  //      headers: {
-  //        Authorization: token,
-  //      },
-  //      body:formData
-  //    });
-  //    if(response.status == 201){
-
-  //     const formData1 = new FormData()
-  //     formData1.append('projectId', project)
-  //     formData1.append('testName',testName)
-  //     formData1.append('testDescription', description)
-  //     formData1.append('module', "true")
-  //     let  response1 = await fetch(`${base_url}functional/saveModulejob`, {
-  //        method: 'POST',
-  //        headers: {
-  //          Authorization: token,
-  //        },
-  //        body:formData1
-  //      });
-  //      console.log(response1.status)
-  //      if(response1.status == 200){
-  //       let data = await response1.json()
-  //       const formData1 = new FormData()
-  //       formData1.append('projectId', project)
-  //       formData1.append('testName',testName)
-  //       formData1.append('executionId', data.executionId)
-  //       formData1.append('modules', JSON.stringify(ids))
-  //       let  response2 = await fetch(`${base_url}functional/createModulejobs`, {
-  //          method: 'POST',
-  //          headers: {
-  //            Authorization: token,
-  //          },
-  //          body:formData1
-  //        });
-  //        console.log('response2status',response2.status)
-  //      }
-  //    }
-
-  //    //create module job
-  //   //insert into module table projetid module : [{'modulename':'login','moduledescription':"descc","moduledetails":[{cmds}]}]
-
-  //   //saave module
-  //  // projectid,testname,locatortype return =>exid
-  //  console.log('save module',project,testName,locatoryStrategy);
-
-  //   //create module
-  //   //exid, modules =['selectedsteocmdid','selectedsteocmdid']
-  //   console.log('create module',ids);
-  // }
 
   const savemodule = async () => {
     setIsLoading(true) // Start loading
@@ -244,7 +170,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
         data.push(obj)
       }
 
-      console.log('create module job', data)
+      // console.log('create module job', data)
       const ids = selectedModule.map((obj) => obj.value)
       const formData = new FormData()
       formData.append('projectId', project)
@@ -263,6 +189,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
         formData1.append('testName', testName)
         formData1.append('testDescription', description)
         formData1.append('module', 'true')
+        formData1.append('locatorType', locatoryStrategy)
         let response1 = await fetch(`${base_url}functional/saveModulejob`, {
           method: 'POST',
           headers: {
@@ -292,7 +219,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
           if (response2.status === 201) {
             const message = await response2.json()
             setReturnMessage({
-              message: message.message || 'Module created successfully!',
+              message: message.message || 'Test case created successfully with modules.',
               status: 'success',
             })
           } else {
@@ -301,6 +228,15 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
               status: 'error',
             })
           }
+        }else if(response1.status == 400){
+          setReturnMessage({
+            message: 'Test name already exist.',
+            status: 'error',
+          })
+          setResumeSaving(true)
+          setActiveTab(0)
+          return
+     
         } else {
           setReturnMessage({
             message: 'Failed to save module job.',
@@ -313,15 +249,18 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
           status: 'error',
         })
       }
-      console.log('save module', project, testName, locatoryStrategy)
-      console.log('create module', ids)
+      setResumeSaving(false)
+      // console.log('save module', project, testName, locatoryStrategy)
+      // console.log('create module', ids)
     } catch (error) {
+      setResumeSaving(false)
       setReturnMessage({
         message: 'An error occurred during the process.',
         status: 'error',
       })
     } finally {
       setIsLoading(false) // Stop loading
+   
     }
   }
 
@@ -438,7 +377,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
             userId: item.userId,
           }))
 
-      console.log('Fetched projects:', projects)
+      // console.log('Fetched projects:', projects)
       setProjectList(projects)
       if (projects.length > 0) {
         setProject(projects[0].id) // Set default selected project
@@ -455,13 +394,14 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
         const data = activeProject.tests[0]
         setTestName(data.name)
         setDescription(data.name || '')
-        console.log('data', data)
+        // console.log('data', data)
         setCommandlist(data.commands)
         const commandslist = data.commands.filter(
           (command: any) => command.command === 'step'
         )
-        console.log('commands', commandslist)
+        // console.log('commands', commandslist)
         setModuleItems(commandslist)
+        setSelectedModule(commandslist)
         setTestType('side')
       }
       await fetchUserProjects() // Fetch user projects
@@ -472,9 +412,15 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     }
   }, [open])
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log('event', event)
-    setActiveTab(newValue)
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    // console.log('event', event)
+ 
+    if (newValue === 1 && moduleItems.length === 0) {
+      // If the user tries to switch to the "Modules" tab but it's not present, stay on the "Config" tab
+      setActiveTab(0);
+    } else {
+      setActiveTab(newValue);
+    }
   }
 
   const handleModuleChange = (index: number, value: string) => {
@@ -512,10 +458,19 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     setShowConfirmModal(false) // Just close the modal
   }
 
+  const handleCloseDialog = (_event: React.SyntheticEvent, reason: 'backdropClick' | 'escapeKeyDown') => {
+    if (reason === 'backdropClick') {
+      // Prevent closing the dialog on backdrop click
+      return;
+    }
+    onClose();
+  };
+
   return (
     <>
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Send to XT</DialogTitle>
+      <Dialog open={open} onClose={handleCloseDialog} >
+    
+        <DialogTitle>Send to CoreALM XT Cloud</DialogTitle>
         <DialogContent  sx={{ position: 'relative' }}>
           <Tabs
             value={activeTab}
@@ -523,7 +478,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
             aria-label="config and modules tabs"
           >
             <Tab label="Config" />
-            <Tab label="Modules" />
+            {moduleItems.length > 0 && <Tab label="Modules" />}
           </Tabs>
 
           {activeTab === 0 && (
@@ -617,6 +572,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
                   (selectedItem) =>
                     selectedItem.id === item.id && selectedItem.exists
                 )
+             
                 return (
                   <FormControl key={index} fullWidth margin="normal">
                     <FormControlLabel
@@ -680,7 +636,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
             color="primary"
             disabled={!isFormValid() || isLoading}
           >
-            Save Modules
+            Save Testcase
           </Button>
           {/* <Button onClick={handleSave} color="secondary" disabled={!isFormValid()}>
             Run Test
@@ -689,10 +645,10 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
       </Dialog>
 
       <ConfirmDialog open={showConfirmModal} onClose={handleCancelConfirm}>
-        <DialogTitle>Module Exist</DialogTitle>
+        <DialogTitle>Module Already Exists!</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Module already exists. Do you want to replace it?
+           It may be utilized by various test cases. Do you want to proceed with replacing it?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

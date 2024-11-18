@@ -17,7 +17,8 @@ import { mutator as updateStepSelection } from '../state/updateStepSelection'
  */
 export type Shape = (
   cmd: RecordNewCommandInput,
-  overrideRecorder?: boolean
+  overrideRecorder?: boolean,
+  description?: string
 ) => Promise<CommandShape[] | null>
 
 const traverseFrame = (target: string) =>

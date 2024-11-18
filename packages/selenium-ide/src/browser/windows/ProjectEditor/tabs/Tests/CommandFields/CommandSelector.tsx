@@ -43,7 +43,7 @@ const CommandSelector: FC<CommandSelectorProps> = ({
           id="command-selector"
           className="flex-1"
           disabled={disabled}
-          onChange={updateCommand(testID, command.id)}
+          onChange={updateCommand(testID, command.id,command)}
           getOptionLabel={(option) => option.label}
           options={commandOptions}
           renderInput={(params) => (

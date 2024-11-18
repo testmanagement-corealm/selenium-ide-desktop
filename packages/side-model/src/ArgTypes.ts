@@ -164,6 +164,10 @@ const argTypes = {
     name: 'xpath',
     description: 'The xpath expression to evaluate',
   },
+  variableValue :{
+    name : 'value',
+    description: 'The value to be saved.'
+  }
 }
 
 export type ArgTypes = typeof argTypes

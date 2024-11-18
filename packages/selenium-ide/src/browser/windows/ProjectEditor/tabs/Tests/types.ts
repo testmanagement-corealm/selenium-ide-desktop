@@ -17,8 +17,10 @@ export interface CommandArgFieldProps extends CommandEditorProps {
 }
 
 export interface CommandFieldProps extends CommandEditorProps {
-  fieldName: 'comment' | 'windowHandleName' | 'windowTimeout' | LocatorFields
+  fieldName: 'comment' | 'windowHandleName' | 'windowTimeout' | LocatorFields |'continueExecution' |'skiperror' |'dynamicValue'|'dynamicValueLen'|"defaultValue"|'validationType'|'variableName'|'useVariable'
   note?: string
+  labelname? :string
+
 }
 
 export interface MiniCommandShape {

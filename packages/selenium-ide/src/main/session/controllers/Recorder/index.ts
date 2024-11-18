@@ -54,12 +54,14 @@ export default class RecorderController extends BaseController {
 
   async recordNewCommand(
     cmd: RecordNewCommandInput,
-    overrideRecorder = false
+    overrideRecorder = false,
+    description=''
   ): Promise<CommandShape[] | null> {
     const session = await this.session.state.get()
     if (session.state.status !== 'recording' && !overrideRecorder) {
       return null
     }
+    // console.log('desc',description)
     const activeWindowHandleID = getActiveWindowHandleID(session) || 'root'
     const commands = []
     if (cmd.winHandleId && activeWindowHandleID != cmd.winHandleId) {
@@ -68,6 +70,16 @@ export default class RecorderController extends BaseController {
         command: 'selectWindow',
         target: 'handle=${' + cmd.winHandleId + '}',
         value: '',
+        continueExecution: false,
+        skiperror: false,
+        useVariable: false,
+        validationType: "String",
+        dynamicValue: false,
+        dynamicValueLen: 22,
+        variableName: "",
+        defaultValue: "",
+        description:'',
+        targets: [],
       }
       commands.push(selectWindowCommand)
     }
@@ -77,6 +89,15 @@ export default class RecorderController extends BaseController {
       target: Array.isArray(cmd.target) ? cmd.target[0][0] : cmd.target,
       targets: Array.isArray(cmd.target) ? cmd.target : [[cmd.target, '']],
       value: Array.isArray(cmd.value) ? cmd.value[0][0] : cmd.value,
+      continueExecution: false,
+      skiperror: false,
+      useVariable: false,
+      validationType: "String",
+      dynamicValue: false,
+      dynamicValueLen: 22,
+      variableName: "",
+      defaultValue: Array.isArray(cmd.value) ? cmd.value[0][0] : cmd.value,
+      description:description,
     }
     const windows = BrowserWindow.getAllWindows()
     this.windowIDs = windows.map((window) => window.id)

@@ -9,9 +9,49 @@ import ProjectEditor from 'browser/components/ProjectEditor'
 import { usePanelGroup } from 'browser/hooks/usePanelGroup'
 import { SessionContextProviders } from 'browser/contexts/provider'
 import ResizeHandle from 'browser/components/ResizeHandle'
+import SendtoXt from 'browser/components/SendToXT'
 
-const ProjectMainWindow = () => (
+
+const ProjectMainWindow = () => {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    // Send a message to the main process when the dialog is closed
+    (window as any).electronAPI.sendMessageToMain('Dialog closed');
+};
+  
+  const handleSave = (data: {
+    testName: string;
+    description: string;
+    project: string;
+    testType: string;
+    locatoryStrategy: string;
+  }) => {
+    console.log('Saved Data:', data);
+
+
+
+
+
+    // Handle saved data (e.g., send to server or update state)
+  };
+  React.useEffect(() => {
+    (window as any).electronAPI.onMenuItemClicked((message: any) => {
+      console.log(`Received from main: ${message}`);
+      setDialogOpen(true)
+      //alert(message); // Display the alert
+    });
+  }, [])
+  return(
+  
   <AppWrapper>
+     <SendtoXt
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        onSave={handleSave}
+      />
     <SessionContextProviders>
       <PanelGroup
         direction="horizontal"
@@ -42,5 +82,6 @@ const ProjectMainWindow = () => (
     </SessionContextProviders>
   </AppWrapper>
 )
+}
 
 renderWhenReady(ProjectMainWindow)

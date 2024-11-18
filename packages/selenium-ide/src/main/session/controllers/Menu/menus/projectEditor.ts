@@ -55,6 +55,16 @@ export const commands: MenuComponent = (session) => () =>
         await session.projects.save(filePath)
       },
     },
+    {
+     
+      label: session.system.languageMap.fileMenuTree.sendtoXT,
+      click: async () => {
+        // console.log('project', session.projects.project)
+        await session.windows.opensendtoxt()
+      },
+    
+      //enabled: Boolean(session.projects.project),
+    },
   ]
 
 export default menuFactoryFromCommandFactory(commands)

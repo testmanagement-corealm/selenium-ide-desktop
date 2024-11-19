@@ -90,10 +90,10 @@ export interface WebDriverExecutorCondEvalResult {
   value: boolean
 }
 
-// interface Props {
-//   defaultValue: string;
-//   formatvalue: string;
-// }
+interface Props {
+  defaultValue: string;
+  formatvalue: string;
+}
 export interface BeforePlayHookInput {
   driver: WebDriverExecutor
 }
@@ -304,27 +304,67 @@ export default class WebDriverExecutor {
     
     return result;
   }
-  //  processDate = ({ defaultValue, formatvalue }: Props): string => {
-  //   let generatedDate: Date = new Date();
+  formatDate = (date: Date, format: string): string => {
+    const day = date.getDate();
+    const month = date.getMonth(); // 0-based (0 = January, 1 = February, ...)
+    const year = date.getFullYear();
+    const weekday = date.toLocaleString('en-US', { weekday: 'long' }); // e.g., "Monday"
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const shortMonthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    const shortWeekdayNames = [
+      'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+    ];
   
-  //   if (defaultValue && defaultValue.trim() !== '') {
-  //     // Check if defaultValue starts with "-" indicating subtraction
-  //     if (defaultValue.startsWith('-')) {
-  //       const daysToSubtract: number = parseInt(defaultValue.slice(1), 10);
-  //       generatedDate = subDays(new Date(), daysToSubtract);
-  //     } else {
-  //       const daysToAdd: number = parseInt(defaultValue, 10);
-  //       generatedDate = addDays(new Date(), daysToAdd);
-  //     }
-  //   }
+    // Helper function to add leading zeros when necessary
+    const pad = (num: number): string => (num < 10 ? `0${num}` : num.toString());
   
-  //   // Format the generated date using the provided format
-  //   const value: string = format(generatedDate, formatvalue);
+    // Format the date string based on the provided format
+    return format
+    .replace('yyyy', year.toString()) // Full year (e.g., 2024)
+    .replace('yy', year.toString().slice(-2)) // 2-digit year (e.g., 24)
+    .replace('a', date.getHours() < 12 ? 'AM' : 'PM') // AM/PM
+    .replace('HH', pad(date.getHours())) // Hours (00-23)
+    .replace('H', date.getHours().toString()) // Hours (0-23)
+    .replace('mm', pad(date.getMinutes())) // Minutes (00-59)
+    .replace('m', date.getMinutes().toString()) // Minutes (0-59)
+    .replace('ss', pad(date.getSeconds())) // Seconds (00-59)
+    .replace('s', date.getSeconds().toString()) // Seconds (0-59) 
+    .replace('MMMM', monthNames[month]) // Full month name (e.g., November)
+    .replace('MMM', shortMonthNames[month]) // Abbreviated month name (e.g., Nov)
+    .replace('MM', pad(month + 1)) // Month (01-12)
+    .replace('M', (month + 1).toString()) // Month (1-12)
+    .replace('dddd', weekday) // Full weekday name (e.g., Monday)
+    .replace('ddd', shortWeekdayNames[date.getDay()]) // Abbreviated weekday name (e.g., Mon)
+    .replace('dd', pad(day)) // Day of the month (01-31)
+    .replace('d', day.toString()) // Day of the month without leading zero (1-31)
+  };
+   processDate = ({ defaultValue, formatvalue }: Props): string => {
+    let generatedDate: Date = new Date();
   
-  //   console.log('Formatted date:', value);
+    if (defaultValue && defaultValue.trim() !== '') {
+      // Check if defaultValue starts with "-" indicating subtraction
+      if (defaultValue.startsWith('-')) {
+        const daysToSubtract: number = parseInt(defaultValue.slice(1), 10);
+        generatedDate.setDate(generatedDate.getDate() - daysToSubtract); // Subtract days
+      } else {
+        const daysToAdd: number = parseInt(defaultValue, 10);
+        generatedDate.setDate(generatedDate.getDate() + daysToAdd); // Add days
+      }
+    }
   
-  //   return value;
-  // }
+    // Format the generated date using the provided format
+    const value: string = this.formatDate(generatedDate, formatvalue);
+  
+    console.log('Formatted date:', value);
+  
+    return value;
+  };
+  
+
 
   name(command: string) {
     if (!command) {
@@ -435,12 +475,12 @@ export default class WebDriverExecutor {
     console.log('create test step executed')
    }
    async doGetText(locator: string,
-    value: string,
+   _: string,
     commandObject: Partial<CommandShape> = {}){
     console.log('get text step executed')
-    console.log('locator',locator)
-    console.log('optionLocator',value)
-    console.log('commandObject',commandObject)
+    // console.log('locator',locator)
+    // console.log('optionLocator',value)
+    // console.log('commandObject',commandObject)
     
     const element = await this.waitForElement(
       locator,
@@ -450,12 +490,12 @@ export default class WebDriverExecutor {
     )
     
      let val = await element.getAttribute('value')
-     console.log('value ettr',val)
+    //  console.log('value ettr',val)
      if(val){
       this.variables.set(commandObject.variableName||'', val)
      }else{
       const text = await element.getText()
-      console.log('text attr',text)
+      // console.log('text attr',text)
       this.variables.set(commandObject.variableName||'', text)
      }
    
@@ -466,23 +506,29 @@ export default class WebDriverExecutor {
     value: string,
     commandObject: Partial<CommandShape> = {}){
     console.log('create variable step executed')
-    console.log('locator',variableName)
-    console.log('optionLocator',value)
-    console.log('commandObject',commandObject)
+    // console.log('locator',variableName)
+    // console.log('optionLocator',value)
+    // console.log('commandObject',commandObject)
     let dynamicval = this.generateAlphanumeric(commandObject.dynamicValueLen || 22)
-    console.log('dynamicval',dynamicval)
+    // console.log('dynamicval',dynamicval)
     let newVal = `${value}${dynamicval}`
-    console.log('newval',newVal)
+    // console.log('newval',newVal)
     this.variables.set(variableName,newVal)
    }
-   async doGenerateDate(){
+   async doGenerateDate(locator: string,
+    value: string,
+    commandObject: Partial<CommandShape> = {}){
     console.log('generate date test step executed')
     // Example usage
-    // const defaultValue = '-5'; // Example input: subtract 5 days
-    // const formatvalue = 'yyyy-MM-dd'; // Example format
-
-    // const formattedDate = this.processDate({ defaultValue, formatvalue });
-    // console.log(formattedDate); // Output formatted date string
+    const defaultValue = commandObject.defaultValue || ''; // Example input: subtract 5 days
+    const formatvalue = value; // Example format
+  
+    const formattedDate = this.processDate({ defaultValue, formatvalue });
+    // console.log(formattedDate,locator); // Output formatted date string
+    if(formattedDate){
+      this.variables.set(locator,formattedDate)
+    }
+   
    }
    async doExtractData(locator: string,
     value: string,
@@ -502,7 +548,7 @@ export default class WebDriverExecutor {
       val = await element.getText()
      }
    
-     console.log('value ettr',val)
+    //  console.log('value ettr',val)
     let template=value;
     let sample=val;
     const placeholders = [];
@@ -515,25 +561,25 @@ export default class WebDriverExecutor {
     while ((match = placeholderPattern.exec(template)) !== null) {
         placeholders.push(match[1]);
     }
-    console.log('placeholders', placeholders);
+    // console.log('placeholders', placeholders);
     
     // Create a regex pattern from the template
     const parts = template.replace(/{{\w+}}/g, '(.*)'); // Replace placeholders with capturing groups
-    console.log("parts", parts);
+    // console.log("parts", parts);
     
     // Ensure the regex matches the entire string by adding anchors ^ and $
     const regex = new RegExp('^' + parts + '$');
     
     // Match the sample string against the generated regex pattern
     const sampleMatch = sample.match(regex);
-    console.log('sample', sampleMatch);
+    // console.log('sample', sampleMatch);
     
     if (!sampleMatch) {
         return;
     }
     
     for (let i = 0; i < placeholders.length; i++) {
-        console.log(placeholders[i], sampleMatch[i + 1]);  
+        // console.log(placeholders[i], sampleMatch[i + 1]);  
         this.variables.set(placeholders[i],sampleMatch[i + 1]) 
     }
     
@@ -746,7 +792,7 @@ export default class WebDriverExecutor {
     _?: string,
     commandObject: Partial<CommandShape> = {}
   ) {
-    console.log('commandobj tar',commandObject.targets)
+    // console.log('commandobj tar',commandObject.targets)
     const element = await this.waitForElementVisible(
       locator,
       this.implicitWait,
@@ -754,7 +800,7 @@ export default class WebDriverExecutor {
       commandObject.targets,
       commandObject.fallbackTargets
     )
-    console.log('ele',element)
+
   
       await this.driver.actions({bridge: true}).move({origin: element}).perform();
     
@@ -1098,7 +1144,7 @@ export default class WebDriverExecutor {
         let dynamicval = this.generateAlphanumeric(commandObject.dynamicValueLen || 22)
         newVal =  `${newVal}${dynamicval}`
     }
-    console.log('newVal',newVal)
+    // console.log('newVal',newVal)
     await element.clear()
     await element.sendKeys(newVal)
   }
@@ -1828,6 +1874,11 @@ WebDriverExecutor.prototype.doCreateVariable = composePreprocessors(
 )
 WebDriverExecutor.prototype.doGenerateDate = composePreprocessors(
   interpolateString,
+  interpolateString,
+  {
+    targetFallback: preprocessArray(interpolateString),
+    valueFallback: preprocessArray(interpolateString),
+  },
   WebDriverExecutor.prototype.doGenerateDate
 )
 WebDriverExecutor.prototype.doExtractData = composePreprocessors(

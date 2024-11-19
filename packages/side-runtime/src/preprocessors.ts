@@ -117,8 +117,8 @@ export function preprocessArray(interpolator: Interpolator) {
   }
 }
 export function interpolateString(value: string, variables: Variables) {
-  console.log('value', value)
-  console.log('variables', variables)
+  // console.log('value', value)
+  // console.log('variables', variables)
 
   if (!value) return ''
 

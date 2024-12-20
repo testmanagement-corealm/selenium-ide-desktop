@@ -269,6 +269,7 @@ export default class DriverController extends BaseController {
             100
         )
         console.debug('Built driver for ' + browser)
+        console.log('driver idex',this.session.projects.project.timeout)
         const useBidi = await this.session.store.get('browserInfo.useBidi')
         if (useBidi) {
             createBidiAPIBindings(this.session, driver)

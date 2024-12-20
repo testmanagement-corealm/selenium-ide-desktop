@@ -78,7 +78,7 @@ export interface BaseListener<ARGS extends VariadicArgs, RESULT = void> {
 export type EventListenerParams<LISTENER extends BaseListener<any>> =
   Parameters<Parameters<LISTENER['addListener']>[0]>
 
-export type LocatorFields = 'target' | 'value' | 'description' 
+export type LocatorFields = 'target' | 'value' | 'description'
 
 
 
@@ -99,5 +99,6 @@ export type RecordNewCommandInput = Omit<
   dynamicValueLen?: number,
   variableName?: string,
   defaultValue?: string,
-  description? : string
+  description? : string,
+  targets?: [string, string][]
 }

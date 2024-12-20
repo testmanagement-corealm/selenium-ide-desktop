@@ -98,6 +98,8 @@ const projectConfig = {
   stepTimeoutHelper: 'Steps will fail if they take longer than this setting',
   stepDelay: 'Step Delay (MILLISECONDS)',
   stepDelayHelper: 'Each step will pause by this setting',
+  executionprior:'Locator strategy',
+  executionPriority:'Steps will be executed based on the selected locator priority.',
   projectPlugins: 'Project Plugins',
 }
 
@@ -154,8 +156,8 @@ const splash = {
   present: 'Welcome to the Selenium IDE client',
   logPath: 'Your log file path:',
   openNotice: 'You can load or create one project',
-  loadProject: 'Load Project',
-  createProject: 'Create Project',
+  loadProject: 'Open Test',
+  createProject: 'Create New Test',
   openRecent: 'Recent Projects',
   languageSelect: 'choose language',
 }

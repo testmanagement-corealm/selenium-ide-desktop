@@ -59,6 +59,7 @@ export interface TestShape {
   id: string
   name: string
   commands: CommandShape[]
+  locatorstrategy?:string
 }
 
 export interface ProjectShape {
@@ -73,4 +74,5 @@ export interface ProjectShape {
   tests: TestShape[]
   suites: SuiteShape[]
   snapshot: SnapshotShape
+
 }

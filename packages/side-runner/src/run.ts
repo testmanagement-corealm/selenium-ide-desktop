@@ -68,9 +68,12 @@ const buildRun = ({ configuration, logger }: HoistedThings): TestRunner => ({
     persistedDriver?: WebDriverExecutor['driver']
   ) => {
     logger.info(`Running test ${test.name}`)
+
+  
     const pluginPaths = correctPluginPaths(project.path, project?.plugins ?? [])
     const plugins = await loadPlugins(pluginPaths)
     const customCommands = getCustomCommands(plugins)
+    console.log('from runt.tsssss',configuration)
     const executor = new WebDriverExecutor({
       capabilities: JSON.parse(
         JSON.stringify(configuration.capabilities)

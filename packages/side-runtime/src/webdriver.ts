@@ -509,7 +509,10 @@ export default class WebDriverExecutor {
     // console.log('locator',variableName)
     // console.log('optionLocator',value)
     // console.log('commandObject',commandObject)
-    let dynamicval = this.generateAlphanumeric(commandObject.dynamicValueLen || 22)
+    let dynamicval=''
+    if(commandObject.dynamicValue){
+       dynamicval = this.generateAlphanumeric(commandObject.dynamicValueLen || 22)
+    }
     // console.log('dynamicval',dynamicval)
     let newVal = `${value}${dynamicval}`
     // console.log('newval',newVal)
@@ -585,7 +588,7 @@ export default class WebDriverExecutor {
     
    }
 
-  async doWebrtcOpen(url: string) {
+  async doWebRtcOpen(_: string, url:string) {
     await this.driver.get(absolutifyUrl(url, this.baseUrl as string))
   }
   
@@ -1890,9 +1893,10 @@ WebDriverExecutor.prototype.doExtractData = composePreprocessors(
   },
   WebDriverExecutor.prototype.doExtractData
 )
-WebDriverExecutor.prototype.doWebrtcOpen = composePreprocessors(
+WebDriverExecutor.prototype.doWebRtcOpen = composePreprocessors(
   interpolateString,
-  WebDriverExecutor.prototype.doWebrtcOpen
+  interpolateString,
+  WebDriverExecutor.prototype.doWebRtcOpen
 )
 WebDriverExecutor.prototype.doWaituntilset = composePreprocessors(
   interpolateString,

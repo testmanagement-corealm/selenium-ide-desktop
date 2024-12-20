@@ -95,11 +95,13 @@ const commands = {
     target: ArgTypes.locator,
     value: ArgTypes.value,
   },
-  webrtcOpen: {
+  
+  webRtcOpen: {
     name: 'Open Rtc',
     description: 'Open Video Url (Webrtc)',
+    value: ArgTypes.url,
     target: ArgTypes.locator,
-    value: ArgTypes.value,
+
   },
   step: {
     name: 'Create Step',

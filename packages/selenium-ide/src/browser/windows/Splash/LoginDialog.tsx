@@ -73,7 +73,7 @@ useEffect(() => {
           id="username-input"
           autoFocus
           margin="dense"
-          label="Username"
+          label="Email"
           type="text"
           fullWidth
           value={username}

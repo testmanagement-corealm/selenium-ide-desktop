@@ -36,7 +36,7 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
   // }
   const onChange = (e: any,value:any) => {
 
-    console.log('update target',value)
+    //console.log('update target',value)
     setLocalValue(value)
     // updateTarget(testID, command.id)(e)
     updateTargetAutoComplete(testID, command.id,command)(e, value)
@@ -46,8 +46,8 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
     updateTargetAutoComplete(testID, command.id,command)(e, value)
   }
   useEffect(() => {
-    setLocalValue(command[fieldName])
-   // console.log('commandfile',command[fieldName], fieldName,command )
+   setLocalValue(command[fieldName])
+   //console.log('commandfile',command[fieldName], fieldName,command )
   }, [command.id, command.target])
 
   // 处理label标签

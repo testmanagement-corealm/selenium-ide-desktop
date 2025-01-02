@@ -507,6 +507,7 @@ export default class Playback {
       this._unwind()
     }
     if (this.currentExecutingNode) {
+      // console.log('curent exec node', this.currentExecutingNode)
       const command = this.currentExecutingNode.command
       const callstackIndex = (this[state].callstack as Callstack).length - 1
       this[EE].emitCommandStateChange({
@@ -569,9 +570,10 @@ export default class Playback {
         
        } catch (error) {
         console.log('err',error)
+        console.log('err target index',0)
       
        }
-      console.log('execute result', result)
+      // console.log('execute result', result)
       if(!result){
         for(let i =0;i < targetsLength ; i++){
 
@@ -591,6 +593,7 @@ export default class Playback {
             }
             break;
           } catch (error) {
+            console.log('err target index',i)
             if(i+1 === targetsLength && !this[state].stopping && !this[state].pausing ){
               throw error
             }else if(i+1 === targetsLength && this[state].stopping && this[state].pausing){

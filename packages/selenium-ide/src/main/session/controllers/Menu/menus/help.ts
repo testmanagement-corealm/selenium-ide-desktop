@@ -10,6 +10,11 @@ export const commands: MenuComponent = (session) => () =>
       },
       label: session.system.languageMap.helpMenuTree.dumpSession,
     },
+    {
+     
+   
+      label:  `Log Path: ${ session.system.getLogPath()}`
+    },
   ]
 
 export default menuFactoryFromCommandFactory(commands)

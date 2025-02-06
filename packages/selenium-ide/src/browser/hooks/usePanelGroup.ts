@@ -10,6 +10,10 @@ export const usePanelGroup = (id: string, disabled = false) => {
     }
     if (!ref.current) return
     window.sideAPI.resizablePanels.getPanelGroup(id).then((values) => {
+      console.log('values',values,id)
+      if(id == 'editor-playback'){
+        values=[70,25]
+      }
       ref.current?.setLayout(values)
       setReady(true)
     })

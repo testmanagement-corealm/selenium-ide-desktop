@@ -12,6 +12,9 @@ import languageMap from 'browser/I18N/keys'
 import CommandCheckboxField from './CommandFields/CommandCheckboxField'
 import NumberTextField from './CommandFields/NumberTextField'
 import SelectField from './CommandFields/SelectField'
+import HelpCenter from '@mui/icons-material/HelpCenter'
+import Tooltip from '@mui/material/Tooltip'
+// import startCase from 'lodash/fp/startCase'
 
 export interface CommandEditorProps {
   command: CommandShape
@@ -33,6 +36,7 @@ const CommandEditor: FC<CommandEditorProps> = ({
   ...props
 }) => {
   const [dropDownData, setDropDownData] = useState<string[]>([]);// State for dropdown data
+
   const intl = useIntl()
   if (typeof command.command != 'string') {
     command.command = '//unknown - could not process'
@@ -66,6 +70,7 @@ const CommandEditor: FC<CommandEditorProps> = ({
      processCommands(); // Call the function to process commands
     // Add any side effects or API calls here based on the useVariable state
   }, [command.useVariable]); // Dependency array includes useVariable
+
   const correctedCommand: CommandShape = {
     ...command,
     command: isDisabled ? command.command.slice(2) : command.command,
@@ -91,6 +96,55 @@ const CommandEditor: FC<CommandEditorProps> = ({
       </Stack>
     )
   }
+
+
+    // Collect all the notes into a single string
+    const getAllNotes = () => {
+      let notes = [];
+   
+      if (command.command === 'getText') {
+        notes.push("Validation type: Check whether the value captured is of the selected validation type");
+        notes.push("Variable Name: These variables can be used in successive steps or recordings. A variable name must start with a letter or an underscore character (_). A variable name cannot start with a digit. A variable name can only contain alpha-numeric characters and underscores (a-z, A-Z, 0-9, and _). A variable name cannot contain spaces");
+      }
+      
+      if (command.command === 'createVariable' || command.command === 'type') {
+        notes.push("Dynamic Value: If this flag is set to true, dynamically generated value will be added to the recorded value.");
+      }
+      
+      if (command.dynamicValue) {
+        notes.push("Max length: Provide maximum length for the dynamic value.");
+      }
+  
+      if (command.command === 'type' || command.command === 'verifyValue' || command.command === 'verifyText' || command.command === 'verifyNotText' || command.command === 'assertNotText' || command.command === 'assertValue' || command.command === 'assertText') {
+        notes.push("Parameter Value: Value captured during recording.")
+        notes.push("Use Variable: If this flag is set to true,value will be considered as a variable.")
+      }
+    
+  
+      if (command.command === 'step') {
+        notes.push("Comment: Azure Test Case ID");
+      }
+  
+      if (command.command === 'GenerateDate') {
+        notes.push("Date Time Format: dd/MM/yyyy (e.g., 21/05/2024)"+"\n"
+           + "yyyy-MM-dd (e.g., 2024-05-21)"
+           +" MMMM dd, yyyy (e.g., May 21, 2024)"
+            +"dd MMMM, yyyy (e.g., 21 May, 2024)"
+           +" dddd, MMMM dd, yyyy (e.g., Friday, May 21, 2024)"
+           + "For more date format options, refer to https://date-fns.org/v2.25.0/docs/format  "          
+            );
+        notes.push("Add/Sub Days: Specify the number of days to add or subtract from the dynamically generated date.");
+      }
+   
+      if(command.command && command.command !== 'Createteststep'){
+        notes.push("Continue Execution: If this flag is set to true, execution of successive commands will not block even if this command fails.");
+        notes.push("Ignore Error: When enabled, errors occurring during this step will be omitted from the overall test status.");
+      }
+  
+
+      
+      return notes.join('<br /><br />'); // Add extra line breaks between each note
+    };
   return (
     <Paper className="z-4" elevation={5} square>
       <Stack
@@ -98,6 +152,34 @@ const CommandEditor: FC<CommandEditorProps> = ({
         spacing={1}
         style={{ maxHeight: '300px', overflowY: 'auto' }}
       >
+         <Typography className="left" variant="body2" style={{'padding':'7px 5px', borderBottom:'1px solid #d8d8d8'}}>
+           Info panel
+           <Tooltip className="mx-2 my-auto"  placement="left" 
+           title={<span dangerouslySetInnerHTML={{ __html: getAllNotes() }} 
+            
+           style={{
+          
+            // White background
+              color: 'white',  // Black text color
+              fontSize: '14px',  // Font size 11px
+              // padding: '5px',  // Add padding around the text
+              // borderRadius: '4px',  // Optional: Rounded corners for the tooltip
+              // boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.2)',  // Optional: Add some shadow to the tooltip
+              zIndex: 9999,  // Ensure the tooltip is on top of other content
+              opacity: 1,  // Ensure the tooltip is fully opaque (no transparency)
+            }
+          }
+           
+           />}>
+            <HelpCenter
+              style={{ 'verticalAlign': 'middle', "float": 'right', cursor: 'pointer' }}
+           
+            />
+          </Tooltip>
+     
+        </Typography>
+      
+  
         <CommandSelector
           command={correctedCommand}
           isDisabled={isDisabled}

@@ -65,6 +65,9 @@ const CommandList: FC<CommandListProps> = ({
         classes={{
           root: 'flex-1 flex-col overflow-y pt-0',
         }}
+        style={{
+          'overflowX':'hidden'
+        }}
         dense
         aria-disabled={disabled}
       >

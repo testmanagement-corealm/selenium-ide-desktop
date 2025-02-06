@@ -1,7 +1,7 @@
 import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
+// import InputLabel from '@mui/material/InputLabel'
+// import MenuItem from '@mui/material/MenuItem'
+// import Select from '@mui/material/Select'
 import React, { useContext } from 'react'
 import EditorToolbar from '../../../../components/Drawer/EditorToolbar'
 import TestCreateDialog from './TestCreateDialog'
@@ -9,6 +9,7 @@ import TestRenameDialog from './TestRenameDialog'
 import TestDeleteDialog from './TestDeleteDialog'
 import { context as activetestIDContext } from 'browser/contexts/active-test'
 import { context as testsContext } from 'browser/contexts/tests'
+import { TextField } from '@mui/material'
 
 const TestSelector: React.FC = () => {
   const [disabled /*, setDisabled*/] = React.useState(false)
@@ -21,19 +22,27 @@ const TestSelector: React.FC = () => {
     tests,
     activeTestID,
   ])
+   
+  // useEffect(()=>{
+  //   const regex = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/? ]+/gi;
+  //   let name = tests.find(t => t.id === activeTestID)?.name || 'Test not found'
+  //   name.replace(regex, "") 
+  //   window.sideAPI.tests.rename(activeTestID, name)
+  // },[tests])
+
   return (
     <>
       <EditorToolbar
         className="py-3 z-2"
         disabled={disabled}
-        onAdd={() => setConfirmCreate(true)}
-        addText="Add Test"
-        onRemove={activeTestID ? async () => setConfirmDelete(true) : undefined}
-        removeText="Remove Test"
+        // onAdd={() => setConfirmCreate(true)}
+        // addText="Add Test"
+        // onRemove={activeTestID ? async () => setConfirmDelete(true) : undefined}
+        // removeText="Remove Test"
         onEdit={activeTestID ? async () => setConfirmRename(true) : undefined}
         editText="Rename Test"
       >
-        <FormControl className="flex flex-1">
+        {/* <FormControl className="flex flex-1">
           <InputLabel id="test-select-label">Selected Test</InputLabel>
           {activeTestID && (
             <Select
@@ -53,7 +62,23 @@ const TestSelector: React.FC = () => {
               ))}
             </Select>
           )}
-        </FormControl>
+        </FormControl> */}
+<FormControl className="flex flex-1">
+  {activeTestID && (
+    <TextField
+      placeholder="Test Name"
+      value={tests.find(t => t.id === activeTestID)?.name || 'Test not found'}
+      margin="dense"
+      size="small"
+      variant="standard" 
+      style={{'marginLeft':'16px'}}// No border variant
+      InputProps={{
+        readOnly: true, // Makes the input field read-only
+        disableUnderline: true, // Removes the underline (border)
+      }}
+    />
+  )}
+</FormControl>
       </EditorToolbar>
       {confirmDelete && (
         <TestDeleteDialog

@@ -18,6 +18,7 @@ const PlayButton: FC = () => {
       aria-label="play"
     >
       <IconButton
+    
         {...baseControlProps}
         data-play
         onClick={() => {
@@ -25,6 +26,7 @@ const PlayButton: FC = () => {
             ? window.sideAPI.playback.play(activeTestID)
             : window.sideAPI.playback.resume()
         }}
+        style={{'color':"#23bf23"}}
       >
         <PlayArrowIcon />
       </IconButton>

@@ -339,16 +339,19 @@ export default class Playback {
       state: PlaybackStates.PLAYING,
       testID: this[state].testID,
     })
-
+    console.log('play called')
+    this[state].stopping=false
     let finishWasCalled = false
     this[state].playPromise = (async () => {
       try {
         await this._executionLoop()
       } catch (err) {
+        console.log('errrrr',err)
         if (finishWasCalled) {
           throw err
         }
       } finally {
+        console.log('stopping exection')
         await this._finishPlaying()
       }
     })()
@@ -506,8 +509,9 @@ export default class Playback {
     ) {
       this._unwind()
     }
+    console.log('this.executionde', this.currentExecutingNode)
     if (this.currentExecutingNode) {
-      // console.log('curent exec node', this.currentExecutingNode)
+     console.log('curent exec node', this.currentExecutingNode)
       const command = this.currentExecutingNode.command
       const callstackIndex = (this[state].callstack as Callstack).length - 1
       this[EE].emitCommandStateChange({
@@ -518,6 +522,8 @@ export default class Playback {
       })
 
       const steps = this[state].steps
+      console.log('steps', steps)
+      console.log('stop', this[state].stopping)
       if (this[state].stopping) {
         return
       } else if (this[state].pausing) {

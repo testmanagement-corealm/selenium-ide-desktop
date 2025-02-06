@@ -1,12 +1,12 @@
-import CloseIcon from '@mui/icons-material/Close'
+// import CloseIcon from '@mui/icons-material/Close'
 import FormControl from '@mui/material/FormControl'
-import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
+// import IconButton from '@mui/material/IconButton'
+// import List from '@mui/material/List'
+// import ListItem from '@mui/material/ListItem'
 import Stack from '@mui/material/Stack'
 import { CommandShape } from '@seleniumhq/side-model'
 import languageMap from 'browser/I18N/keys'
-import EditorToolbar from 'browser/components/Drawer/EditorToolbar'
+// import EditorToolbar from 'browser/components/Drawer/EditorToolbar'
 import TextField from 'browser/components/UncontrolledTextField'
 import { context } from 'browser/contexts/config'
 import { context as testsContext } from 'browser/contexts/tests'
@@ -23,12 +23,13 @@ export interface MiniProjectShape {
 }
 
 const {
-  plugins: { projectCreate, projectDelete, projectEdit },
+  // plugins: { projectCreate, projectDelete, projectEdit },
   projects: { update },
 } = window.sideAPI
 const ProjectSettings: FC = () => {
   const {
-    project: { delay, name, plugins, timeout, url },
+    project: { delay, name, timeout, url },
+    // project: { delay, name, plugins, timeout, url },
   } = React.useContext(context)
 
    const tests = useContext(testsContext)
@@ -221,7 +222,7 @@ const fetchData = async (executionPriority:string) => {
       </Select>
         </FormControl>
       </Stack>
-      <List
+      {/* <List
         dense
         subheader={
           <EditorToolbar onAdd={() => projectCreate()} addText="Add Plugin">
@@ -246,7 +247,7 @@ const fetchData = async (executionPriority:string) => {
             </IconButton>
           </ListItem>
         ))}
-      </List>
+      </List> */}
     </>
   )
 }

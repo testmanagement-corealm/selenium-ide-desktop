@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
-import { FormControl, FormControlLabel, Tooltip } from '@mui/material'
-import HelpCenter from '@mui/icons-material/HelpCenter'
+import { FormControl, FormControlLabel } from '@mui/material'
+// import HelpCenter from '@mui/icons-material/HelpCenter'
 import startCase from 'lodash/fp/startCase'
 import { CommandFieldProps } from '../types'
 import { updateCheckboxField } from './utils'
 // import { LocatorFields } from '@seleniumhq/side-api'
-import { useIntl } from 'react-intl'
+// import { useIntl } from 'react-intl'
 // import languageMap from 'browser/I18N/keys'
 import UncontrolledCheckbox from 'browser/components/UncontrolledCheckbox'
 
@@ -20,23 +20,23 @@ const CommandCheckboxField: FC<CommandFieldProps> = ({
   command,
   disabled,
   fieldName,
-  note,
+  // note,
   testID,
   labelname
 
 }) => {
-  const intl = useIntl()
+  // const intl = useIntl()
   const FieldName = startCase(labelname? labelname: fieldName)
   const updateCheckbox = updateCheckboxField(fieldName)
 
 
 
   // Generate full note based on localization
-  const fullNote =
-    note ||
-    intl.formatMessage({
-      id: `commandMap.${command.command}.${fieldName}.description`,
-    })
+  // const _fullNote =
+  //   note ||
+  //   intl.formatMessage({
+  //     id: `commandMap.${command.command}.${fieldName}.description`,
+  //   })
 
   // // Label to show next to the checkbox
   // const label = fullNote
@@ -67,11 +67,11 @@ const CommandCheckboxField: FC<CommandFieldProps> = ({
           },
         }}
       />
-      {fullNote && (
+      {/* {fullNote && (
         <Tooltip className="mx-2 my-auto" title={fullNote} placement="top-end">
           <HelpCenter />
         </Tooltip>
-      )}
+      )} */}
     </FormControl>
   )
 }

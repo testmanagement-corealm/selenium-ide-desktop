@@ -49,7 +49,7 @@ export default class TestsController extends BaseController {
   async create(name?: string): Promise<TestShape> {
     return {
       id: randomUUID(),
-      name: name===undefined? 'New Test' : name,
+      name: name===undefined? 'NewTest' : name,
       commands: [
         {
           "id": randomUUID(),

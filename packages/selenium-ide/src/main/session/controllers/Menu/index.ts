@@ -75,6 +75,8 @@ export default class MenuController extends BaseController {
 
   async openApplication() {
     const menu = await menus.application(this.session)()
+    
+ 
     Menu.setApplicationMenu(menu)
   }
 }

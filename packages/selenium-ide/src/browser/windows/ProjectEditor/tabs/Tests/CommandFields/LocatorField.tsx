@@ -1,19 +1,17 @@
-import HelpCenter from '@mui/icons-material/HelpCenter'
+import { MoreVert } from '@mui/icons-material';
+import { FormControl, IconButton, TextField, Menu, MenuItem } from '@mui/material';
 import AddToHomeScreenIcon from '@mui/icons-material/AddToHomeScreen'
 import FindInPageIcon from '@mui/icons-material/FindInPage'
 import Autocomplete from '@mui/material/Autocomplete'
-import FormControl from '@mui/material/FormControl'
-import IconButton from '@mui/material/IconButton'
-import TextField from '@mui/material/TextField'
-import Tooltip from '@mui/material/Tooltip'
 import capitalize from 'lodash/fp/capitalize'
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect , useState} from 'react'
 // import { updateField, updateFieldAutoComplete } from './utils'
 import {  updateFieldAutoComplete } from './utils'
 import { CommandArgFieldProps } from '../types'
 import languageMap from 'browser/I18N/keys'
 import { useIntl } from 'react-intl'
 import { LocatorFields } from '@seleniumhq/side-api'
+import { FormattedMessage } from 'react-intl'
 
 type PluralField = 'targets' | 'values'
 
@@ -26,7 +24,15 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
   const intl = useIntl()
   const fieldNames = (fieldName + 's') as PluralField
   const FieldName = capitalize(fieldName)
+ const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   // const updateTarget = updateField(fieldName)
   const updateTargetAutoComplete = updateFieldAutoComplete(fieldName)
   const [_localValue, setLocalValue] = React.useState(command[fieldName])
@@ -112,7 +118,60 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
         text-overflow="ellipsis"
         value={command[fieldName as LocatorFields]}
       />
-      <IconButton
+      
+    {/* More options menu (three dots) */}
+    {/* More options menu (three dots) */}
+    <IconButton onClick={handleMenuOpen} disabled={disabled}>
+        <MoreVert />
+      </IconButton>
+
+      {/* Menu with side-by-side options */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        {/* Open Window option */}
+        <MenuItem 
+          disabled={disabled}
+        onClick={() =>
+              window.sideAPI.recorder.requestHighlightElement(fieldName)
+            }>
+          <IconButton
+          size="small"
+            
+          >
+            <FindInPageIcon />
+          
+         
+         
+          </IconButton>
+          <FormattedMessage
+              id={"Find target in a page" }
+            />
+          </MenuItem>
+          
+          {/* Enable/Disable Command option */}
+          <MenuItem
+            onClick={() =>
+              window.sideAPI.recorder.requestSelectElement(true, fieldName)
+            }
+            disabled={disabled}
+          >
+          <IconButton
+        size="small"
+          
+          >
+            <AddToHomeScreenIcon />
+           
+         
+          </IconButton>
+          <FormattedMessage
+              id={"Select target in a page" }
+            />
+        </MenuItem>
+      </Menu>
+      {/* <IconButton
         className="ms-4"
         disabled={disabled}
         onClick={() =>
@@ -128,10 +187,10 @@ const CommandLocatorField: FC<CommandArgFieldProps> = ({
         }
       >
         <AddToHomeScreenIcon />
-      </IconButton>
-      <Tooltip className="mx-2 my-auto" title={fullnote} placement="top-end">
+      </IconButton> */}
+      {/* <Tooltip className="mx-2 my-auto" title={fullnote} placement="top-end">
         <HelpCenter />
-      </Tooltip>
+      </Tooltip> */}
     </FormControl>
   )
 }

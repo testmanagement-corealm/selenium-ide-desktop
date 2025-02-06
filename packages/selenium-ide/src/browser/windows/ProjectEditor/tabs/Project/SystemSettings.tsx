@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import { context } from 'browser/contexts/config'
-import { VerboseBoolean } from '@seleniumhq/side-api'
+// import { VerboseBoolean } from '@seleniumhq/side-api'
 import React, { FC, useContext } from 'react'
 import DriverSelector from './DriverSelect'
 import { FormattedMessage } from 'react-intl'
@@ -58,7 +58,7 @@ const SystemSettings: FC = () => {
           <MenuItem value="Before">Before</MenuItem>
         </Select>
       </FormControl>
-      <FormControl>
+      {/* <FormControl>
         <InputLabel id="camelCaseNames">
           {<FormattedMessage id={languageMap.systemConfig.camelCase} />}
         </InputLabel>
@@ -74,7 +74,7 @@ const SystemSettings: FC = () => {
           <MenuItem value="Yes">Yes</MenuItem>
           <MenuItem value="No">No</MenuItem>
         </Select>
-      </FormControl>
+      </FormControl> */}
       <FormControl>
         <InputLabel id="ignoreSSLErrors">
           {<FormattedMessage id={languageMap.systemConfig.ignoreErrors} />}
@@ -94,7 +94,7 @@ const SystemSettings: FC = () => {
           <MenuItem value="No">No</MenuItem>
         </Select>
       </FormControl>
-      <FormControl>
+      {/* <FormControl>
         <InputLabel id="disableCodeExportCompat">
           {<FormattedMessage id={languageMap.systemConfig.codeExport} />}
         </InputLabel>
@@ -112,7 +112,7 @@ const SystemSettings: FC = () => {
           <MenuItem value="Yes">Yes</MenuItem>
           <MenuItem value="No">No</MenuItem>
         </Select>
-      </FormControl>
+      </FormControl> */}
       <DriverSelector />
     </Stack>
   )

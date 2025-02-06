@@ -148,6 +148,7 @@ export default class WindowsController extends BaseController {
        
         menu.once('menu-will-close', () => {
           // execute after menu click-function trigger
+         
           setTimeout(() => {
             if (!handled) {
               resolve(null)
@@ -292,6 +293,23 @@ export default class WindowsController extends BaseController {
       }
     });
     this.windows['project-editor'].webContents.send('sendtoxt', 'sendtoxt')
+  }
+
+  async closedialogs(){
+    console.log('close function')
+    this.windows['project-editor'].webContents.send('closedialog', 'closedialog')
+  }
+  async opensidefilesave(){
+    console.log('test function')
+    this.playbackWindows.forEach((playbackWindow) => {
+      if (playbackWindow) {
+        playbackWindow.hide();
+        console.log(`Playback window hide`);
+      } else {
+        console.log('No playback window found');
+      }
+    });
+    this.windows['project-editor'].webContents.send('sidefilesave', 'sidefilesave')
   }
   async open(
     name: string,

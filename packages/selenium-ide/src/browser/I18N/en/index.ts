@@ -23,7 +23,8 @@ const fileMenuTree = {
   recentProjects: 'Recent Projects',
   saveProject: 'Save Project',
   saveProjectAs: 'Save Project As...',
-  sendtoXT:'Send to XT'
+  sendtoXT:'Save as Test Library (CoreALM XT)',
+  sendasside:'Save as Side File (CoreALM XT)'
 }
 
 const editMenuTree = {
@@ -155,7 +156,7 @@ const playback = {
 const splash = {
   present: 'Welcome to the Selenium IDE client',
   logPath: 'Your log file path:',
-  openNotice: 'You can load or create one project',
+  openNotice: 'You can load or create one Test Case',
   loadProject: 'Open Test',
   createProject: 'Create New Test',
   openRecent: 'Recent Projects',

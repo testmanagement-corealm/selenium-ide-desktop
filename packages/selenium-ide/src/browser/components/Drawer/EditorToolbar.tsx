@@ -150,6 +150,7 @@ const EditorToolbar: FC<EditorToolbarProps> = ({
       elevation={elevation}
       square
       {...props}
+      style={{'borderBottom':'1px solid gray','height':'46px'}}
     >
       <Box sx={{ flex: 1 }}>{children}</Box>
       <EditorToolbarIcons

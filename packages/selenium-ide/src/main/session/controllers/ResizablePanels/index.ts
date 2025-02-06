@@ -10,7 +10,7 @@ type Rect = {
 
 const resizablePanelDefaults: Record<string, number[]> = {
   'drawer-editor': [30, 70],
-  'editor-playback': [30, 70],
+  'editor-playback': [70, 25],
   'playback-logger': [80, 20],
 }
 
@@ -74,18 +74,23 @@ export default class ResizablePanelsController extends BaseController {
     const { active, height, width } =
       this.session.state.state.editor.overrideWindowSize
     const panelDims = await this.getPlaybackWindowDimensions()
+    // console.log('demie', panelDims)
     if (active) {
       this.session.windows.resizePlaybackWindows(width, height)
     } else {
       this.session.windows.resizePlaybackWindows(...panelDims.size)
     }
     this.session.windows.playbackWindows.forEach((playbackWindow) => {
+      // console.log('position',...panelDims.position)
       playbackWindow.setPosition(...panelDims.position)
     })
   }
 
-  async setPanelGroup(id: string, dimensions: number[]) {
-    this.session.store.set(`panelGroup.${id}`, dimensions)
+  async setPanelGroup(id: string, _dimensions: number[]) {
+
+    const defaultValue = resizablePanelDefaults?.[id]
+    console.log('defaultvalue',defaultValue)
+    this.session.store.set(`panelGroup.${id}`, defaultValue)
     this.recalculatePlaybackWindows()
   }
 

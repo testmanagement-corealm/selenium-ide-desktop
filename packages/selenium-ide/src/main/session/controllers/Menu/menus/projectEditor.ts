@@ -61,6 +61,18 @@ export const commands: MenuComponent = (session) => () =>
       click: async () => {
         // console.log('project', session.projects.project)
         await session.windows.opensendtoxt()
+        //
+      },
+    
+      //enabled: Boolean(session.projects.project),
+    },
+    {
+     
+      label: session.system.languageMap.fileMenuTree.sendasside,
+      click: async () => {
+        // console.log('project', session.projects.project)
+        await session.windows.opensidefilesave()
+      
       },
     
       //enabled: Boolean(session.projects.project),

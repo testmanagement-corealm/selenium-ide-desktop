@@ -17,6 +17,7 @@ const SettingsTabs: React.FC = () => (
     aria-label="Selenium IDE workflows"
     className="not-draggable"
     indicatorColor="primary"
+    style={{'background':'white'}}
     onChange={(_e, group) => {
       window.sideAPI.state.set('editor.configSettingsGroup', group)
     }}
@@ -34,11 +35,11 @@ const SettingsTabs: React.FC = () => (
       value="system"
       {...a11yProps('system')}
     />
-    <Tab
+    {/* <Tab
       label={<FormattedMessage id={languageMap.configTab.outPut} />}
       value="outPut"
       {...a11yProps('outPut')}
-    />
+    /> */}
   </Tabs>
 )
 

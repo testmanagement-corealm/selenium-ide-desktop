@@ -77,8 +77,9 @@ const CommandList: FC<CommandListProps> = ({
       <ReorderableList
         aria-disabled={disabled}
         classes={{
-          root: 'flex-1 flex-col overflow-y pt-0',
+          root: 'flex-1 flex-col overflow-y pt-0 customOverflowClass',
         }}
+     
         dense
       >
         {preview.map(([command, origIndex], index) => {

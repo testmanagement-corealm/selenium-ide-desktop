@@ -8,7 +8,9 @@ import { FormattedMessage } from 'react-intl'
 const ProjectPlaybackWindow = () => (
   <Box className="fill flex flex-col pos-rel">
     <Box className="flex flex-1 width-100" />
-    <Paper className="flex flex-initial p-5 width-100" elevation={0}>
+    <Paper className="flex flex-initial p-5 width-100" elevation={0}  sx={{
+    background: '#F5F6FA', // Using sx for styling
+  }}>
       <Box className="block width-100">
         <Typography align="center" variant="subtitle1">
           <FormattedMessage id={languageMap.playback.content} />

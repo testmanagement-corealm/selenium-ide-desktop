@@ -30,6 +30,7 @@ const URLBar: React.FC<{ tab: null | TabShape }> = ({ tab }) => {
           className="width-100"
           inputProps={{
             ['data-url']: true,
+            style: { padding: '3px' },  // Apply padding directly to the input field
           }}
           inputRef={ref}
           onKeyDown={(e) => {
@@ -40,6 +41,7 @@ const URLBar: React.FC<{ tab: null | TabShape }> = ({ tab }) => {
           }}
           margin="none"
           size="small"
+        
         />
       </Box>
     </>

@@ -1,9 +1,9 @@
-import TabUnselectedIcon from '@mui/icons-material/TabUnselected'
+// import TabUnselectedIcon from '@mui/icons-material/TabUnselected'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import React, { useContext } from 'react'
-import { Checkbox, Tooltip } from '@mui/material'
+// import { Checkbox, Tooltip } from '@mui/material'
 import { context } from 'browser/contexts/session'
 import languageMap from 'browser/I18N/keys'
 import { FormattedMessage } from 'react-intl'
@@ -17,6 +17,7 @@ const inputProps = {
   sx: {
     paddingLeft: 0.5,
     paddingRight: 0.5,
+    padding: '3px'
   },
 }
 
@@ -44,7 +45,7 @@ const PlaybackDimensionControls: React.FC = () => {
   }, [active])
   return (
     <>
-      <Tooltip
+      {/* <Tooltip
         placement="left"
         title={<FormattedMessage id={languageMap.playback.windowSize} />}
       >
@@ -65,7 +66,7 @@ const PlaybackDimensionControls: React.FC = () => {
           <TabUnselectedIcon className="height-100" />
           <Checkbox checked={active} size="small" disableRipple />
         </Box>
-      </Tooltip>
+      </Tooltip> */}
       <Box className="flex flex-col flex-initial pe-3" justifyContent="center">
         <Typography>
           <FormattedMessage id={languageMap.playback.width} />
@@ -73,7 +74,7 @@ const PlaybackDimensionControls: React.FC = () => {
       </Box>
       <Box className="flex-initial">
         <TextField
-          disabled={!active}
+          // disabled={!active}
           inputProps={inputProps}
           onChange={(e: any) => {
             const val = Number(e.target.value)
@@ -94,7 +95,7 @@ const PlaybackDimensionControls: React.FC = () => {
       </Box>
       <Box className="flex-initial pe-4">
         <TextField
-          disabled={!active}
+          // disabled={!active}
           inputProps={inputProps}
           onChange={(e: any) => {
             const val = Number(e.target.value)

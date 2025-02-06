@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
+// import IconButton from '@mui/material/IconButton'
 import ListItemText from '@mui/material/ListItemText'
-import PauseIcon from '@mui/icons-material/Pause'
+// import PauseIcon from '@mui/icons-material/Pause'
 import { CommandShape } from '@seleniumhq/side-model'
 import { PlaybackEventShapes } from '@seleniumhq/side-runtime'
 import { camelToTitleCase } from '@seleniumhq/side-api/dist/helpers/string'
@@ -12,7 +12,7 @@ import CommandOverlay from './TestCommandOverlay'
 
 const {
   state: { updateStepSelection },
-  tests: { updateStep },
+  // tests: { updateStep },
 } = window.sideAPI
 
 const commandTextFormat = { color: 'primary.main', typography: 'body2' }
@@ -23,6 +23,11 @@ const commentTextFormat = {
 }
 const argTextFormat = {
   color: 'secondary.main',
+  ml: 2,
+  typography: 'subtitle2',
+}
+const argValueFormat = {
+  color: '#e79839',
   ml: 2,
   typography: 'subtitle2',
 }
@@ -43,15 +48,15 @@ interface CommandRowProps {
   selected: boolean
 }
 
-const updateIsBreakpoint = (
-  testID: string,
-  commandID: string,
-  isBreakpoint: boolean
-) => {
-  updateStep(testID, commandID, {
-    isBreakpoint,
-  })
-}
+// const updateIsBreakpoint = (
+//   testID: string,
+//   commandID: string,
+//   isBreakpoint: boolean
+// ) => {
+//   updateStep(testID, commandID, {
+//     isBreakpoint,
+//   })
+// }
 
 export const defaultCommandState =
   {} as unknown as PlaybackEventShapes['COMMAND_STATE_CHANGED']
@@ -59,8 +64,8 @@ export const defaultCommandState =
 const CommandRow: React.FC<CommandRowProps> = ({
   activeTest,
   commandState = defaultCommandState,
-  command: { command, comment, id, isBreakpoint, opensWindow, target, value },
-  disabled = false,
+  command: { command, comment, id, opensWindow, target, value },
+  // disabled = false,
   index,
   reorderPreview,
   resetPreview,
@@ -70,8 +75,8 @@ const CommandRow: React.FC<CommandRowProps> = ({
     command = '//unknown - could not process'
   }
 
-  const toggleBreakpoint = () =>
-    updateIsBreakpoint(activeTest, id, !isBreakpoint)
+  // const toggleBreakpoint = () =>
+  //   updateIsBreakpoint(activeTest, id, !isBreakpoint)
   const isDisabled = command.startsWith('//')
   const commandText = isDisabled ? command.slice(2) : command
   const mainClass = ['pos-rel'].concat(isDisabled ? ['o-50'] : []).join(' ')
@@ -99,16 +104,16 @@ const CommandRow: React.FC<CommandRowProps> = ({
         window.sideAPI.tests.reorderSteps(activeTest, newIndex)
       }
       reorderReset={resetPreview}
-      secondaryAction={
-        <IconButton
-          color={isBreakpoint ? 'primary' : 'default'}
-          disabled={disabled}
-          edge="end"
-          onClick={toggleBreakpoint}
-        >
-          <PauseIcon />
-        </IconButton>
-      }
+      // secondaryAction={
+      //   <IconButton
+      //     color={isBreakpoint ? 'primary' : 'default'}
+      //     disabled={disabled}
+      //     edge="end"
+      //     onClick={toggleBreakpoint}
+      //   >
+      //     <PauseIcon />
+      //   </IconButton>
+      // }
       selected={selected}
       select={updateStepSelection}
     >
@@ -127,7 +132,7 @@ const CommandRow: React.FC<CommandRowProps> = ({
               <Box sx={commentTextFormat}>// {comment}</Box>
             )}
             <Box sx={argTextFormat}>{target}</Box>
-            <Box sx={argTextFormat}>{value}</Box>
+            <Box sx={argValueFormat}>{value}</Box>
             <Box sx={errorTextFormat}>{commandState.message}</Box>
           </>
         }

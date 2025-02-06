@@ -43,10 +43,12 @@ export const commands: MenuComponent = (session: Session) => () =>
           },
         },
       ],
+   
     },
     {
       label: session.system.languageMap.windowTab.file,
       submenu: projectEditorCommands(session)(),
+     
     },
     {
       label: session.system.languageMap.windowTab.edit,
@@ -54,14 +56,17 @@ export const commands: MenuComponent = (session: Session) => () =>
         ...editBasicsCommands(session)(),
         ...testEditorCommands(session)(),
       ],
+   
     },
     {
       label: session.system.languageMap.windowTab.view,
       submenu: projectViewCommands(session)(),
+  
     },
     {
       label: session.system.languageMap.windowTab.help,
       submenu: helpMenuCommands(session)(),
+     
     },
   ]
 

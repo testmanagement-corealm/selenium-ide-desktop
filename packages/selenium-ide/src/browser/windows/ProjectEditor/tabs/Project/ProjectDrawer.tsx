@@ -37,7 +37,7 @@ const ConfigGroup: ConfigGroupFactory =
 
 const ProjectConfig = ConfigGroup('project')
 const SystemConfig = ConfigGroup('system')
-const OutPutConfig = ConfigGroup('outPut')
+// const OutPutConfig = ConfigGroup('outPut')
 
 const ProjectDrawer: FC = () => {
   const configSettingsGroup = React.useContext(context)
@@ -46,7 +46,7 @@ const ProjectDrawer: FC = () => {
       <List dense>
         <ProjectConfig value={configSettingsGroup} />
         <SystemConfig value={configSettingsGroup} />
-        <OutPutConfig value={configSettingsGroup} />
+        {/* <OutPutConfig value={configSettingsGroup} /> */}
       </List>
     </Drawer>
   )

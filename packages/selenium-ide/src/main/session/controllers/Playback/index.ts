@@ -110,6 +110,7 @@ export default class PlaybackController extends BaseController {
   }
 
   async stop() {
+    console.log('stop called')
     if (this.isPlaying) {
       await this.pause()
     }
@@ -344,6 +345,7 @@ export default class PlaybackController extends BaseController {
       const testName = this.session.tests.getByID(
         testID || this.session.state.state.activeTestID
       )?.name
+      console.debug('e state',e.state)
       console.debug(`Playing state changed ${e.state} for test ${testName} testtttttttttt`)
       let closeAll = false
       switch (e.state) {

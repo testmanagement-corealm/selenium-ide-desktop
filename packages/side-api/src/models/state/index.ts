@@ -27,13 +27,13 @@ export const defaultEditorState: EditorStateShape = {
   configSettingsGroup: 'project',
   copiedCommands: [],
   overrideWindowSize: {
-    active: false,
+    active: true,
     height: 600,
-    width: 800,
+    width: 1200,
   },
   selectedCommandIndexes: [],
   selectedTestIndexes: [],
-  showDrawer: true,
+  showDrawer: false,
   suiteMode: 'editor',
 }
 

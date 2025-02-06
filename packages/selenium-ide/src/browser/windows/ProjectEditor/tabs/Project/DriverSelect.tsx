@@ -1,10 +1,10 @@
-import { Typography } from '@mui/material'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { Browser } from '@seleniumhq/get-driver'
-import { VerboseBoolean } from '@seleniumhq/side-api'
+// import { Typography } from '@mui/material'
+// import FormControl from '@mui/material/FormControl'
+// import InputLabel from '@mui/material/InputLabel'
+// import MenuItem from '@mui/material/MenuItem'
+// import Select, { SelectChangeEvent } from '@mui/material/Select'
+// import { Browser } from '@seleniumhq/get-driver'
+// import { VerboseBoolean } from '@seleniumhq/side-api'
 import { BrowserInfo, BrowsersInfo } from 'main/types'
 import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
@@ -20,13 +20,13 @@ const ourElectronBrowserInfo: BrowserInfo = {
 }
 /****************以上为我新增*****************/
 
-const browserToString = (browser: BrowserInfo): string =>
-  `${browser.browser}|${browser.version}`
+// const browserToString = (browser: BrowserInfo): string =>
+//   `${browser.browser}|${browser.version}`
 
-const browserFromString = (browserString: string): BrowserInfo => {
-  const [browser, version] = browserString.split('|')
-  return { browser: browser as Browser, version }
-}
+// const browserFromString = (browserString: string): BrowserInfo => {
+//   const [browser, version] = browserString.split('|')
+//   return { browser: browser as Browser, version }
+// }
 
 const DriverSelector = () => {
   const [browserInfo, setBrowserInfo] = useState<BrowsersInfo>({
@@ -53,23 +53,23 @@ const DriverSelector = () => {
       selected: browser,
     }))
   }
-  const processBidiSelection = async (useBidi: boolean) => {
-    const browser = {
-      ...browserInfo.selected!,
-      useBidi,
-    }
-    processBrowserSelection(browser)
-  }
-  const selectBrowser = async (e: SelectChangeEvent<string>) => {
-    const browser = {
-      ...browserFromString(e.target.value as string),
-      useBidi: Boolean(browserInfo?.selected?.useBidi ?? false),
-    }
-    processBrowserSelection(browser)
-  }
+  // const processBidiSelection = async (useBidi: boolean) => {
+  //   const browser = {
+  //     ...browserInfo.selected!,
+  //     useBidi,
+  //   }
+  //   processBrowserSelection(browser)
+  // }
+  // const selectBrowser = async (e: SelectChangeEvent<string>) => {
+  //   const browser = {
+  //     ...browserFromString(e.target.value as string),
+  //     useBidi: Boolean(browserInfo?.selected?.useBidi ?? false),
+  //   }
+  //   processBrowserSelection(browser)
+  // }
   return (
     <>
-      <Typography variant="caption">
+      {/* <Typography variant="caption">
         <FormattedMessage id={languageMap.systemConfig.bidiHelper} />
       </Typography>
       <FormControl>
@@ -129,7 +129,7 @@ const DriverSelector = () => {
             </MenuItem>
           </Select>
         )}
-      </FormControl>
+      </FormControl> */}
       <Button
         color="secondary"
         size="small"

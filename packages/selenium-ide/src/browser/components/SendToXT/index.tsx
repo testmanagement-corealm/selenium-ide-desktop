@@ -9,40 +9,49 @@ import {
   MenuItem,
   Button,
   FormControl,
-  InputLabel,
-  Tabs,
-  Tab,
+  // InputLabel,
+  // Tabs,
+  // Tab,
   Checkbox,
   FormControlLabel,
   Dialog as ConfirmDialog,
   DialogContentText,
+  Typography,
+  // Typography,
 } from '@mui/material'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { CommandShape } from '@seleniumhq/side-model'
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/material';
 
-const LoadingOverlay = ({ isLoading }: { isLoading: boolean }) => {
+
+const LoadingOverlay = ({ isLoading, message}: { isLoading: boolean,message: string }) => {
   if (!isLoading) return null;
 
-  return (
-      <Box
-          sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000, // Ensure it appears above other content
-          }}
-      >
-          <CircularProgress />
-      </Box>
-  );
+   return (
+     <Box
+       sx={{
+         position: 'absolute',
+         top: 0,
+         left: 0,
+         right: 0,
+         bottom: 0,
+         backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+         display: 'flex',
+         flexDirection: 'column',  // Stack content vertically
+         justifyContent: 'center',
+         alignItems: 'center',
+         zIndex: 1000, // Ensure it appears above other content
+         padding: 2,
+       }}
+     >
+       <CircularProgress />
+       {/* Show the message below the loader */}
+       <Typography sx={{ marginTop: 2, fontSize: '1rem'}}>
+         {message}
+       </Typography>
+     </Box>
+   );
 };
 
 interface SendtoXtProps {
@@ -60,19 +69,19 @@ interface SendtoXtProps {
 
 let base_url = 'https://dev.corealm.io/xt/'
 
-const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
-  const [testName, setTestName] = React.useState('')
-  const [description, setDescription] = React.useState('')
+const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose}) => {
+  // const [testName, setTestName] = React.useState('')
+  // const [description, setDescription] = React.useState('')
   const [project, setProject] = React.useState('')
   const [token, setToken] = React.useState('')
   const [returnMessage, setReturnMessage] = React.useState<{
     message: string
     status: 'success' | 'error'
   } | null>(null)
-  const [testType, setTestType] = React.useState('side')
-  const [locatoryStrategy, setLocatoryStrategy] = React.useState('absolute')
+  // const [testType, setTestType] = React.useState('side')
+  // const [locatoryStrategy, setLocatoryStrategy] = React.useState('absolute')
   const [projectList, setProjectList] = React.useState<any[]>([])
-  const [activeTab, setActiveTab] = React.useState(0)
+  // const [activeTab, setActiveTab] = React.useState(0)
   const [moduleItems, setModuleItems] = React.useState<CommandShape[]>([])
   const [selectedModule, setSelectedModule] = React.useState<any[]>([])
   const [commandlist, setCommandlist] = React.useState<any[]>([])
@@ -81,12 +90,13 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     () => () => {}
   )
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [resumesaving, setResumeSaving] = React.useState<boolean>(false)
+
+
   const isFormValid = () => {
     return (
-      testName &&
-      description &&
-      locatoryStrategy &&
+      // testName &&
+      // description &&
+      // locatoryStrategy &&
       project &&
       moduleItems.length > 0 &&
       selectedModule.length >0
@@ -133,9 +143,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
 
   const checkstepunique = async () => {
     setReturnMessage(null)
-    let updatedModules = [...selectedModule]
-    console.log('resumesaving', resumesaving)
-    if(!resumesaving){
+    let updatedModules = [...selectedModule] 
       const formData = new FormData()
       formData.append('projectId', project)
       formData.append('modules', JSON.stringify(selectedModule))
@@ -150,7 +158,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
         updatedModules = await response.json()
         setSelectedModule(updatedModules)
       }
-    }
+    
     return updatedModules
   }
 
@@ -171,7 +179,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
       }
 
       // console.log('create module job', data)
-      const ids = selectedModule.map((obj) => obj.value)
+      // const ids = selectedModule.map((obj) => obj.value)
       const formData = new FormData()
       formData.append('projectId', project)
       formData.append('modules', JSON.stringify(data))
@@ -184,76 +192,81 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
       })
 
       if (response.status == 201) {
-        const formData1 = new FormData()
-        formData1.append('projectId', project)
-        formData1.append('testName', testName)
-        formData1.append('testDescription', description)
-        formData1.append('module', 'true')
-        formData1.append('locatorType', locatoryStrategy)
-        let response1 = await fetch(`${base_url}functional/saveModulejob`, {
-          method: 'POST',
-          headers: {
-            Authorization: token,
-          },
-          body: formData1,
-        })
-
-        if (response1.status === 200) {
-          let data = await response1.json()
-          const formData1 = new FormData()
-          formData1.append('projectId', project)
-          formData1.append('testName', testName)
-          formData1.append('executionId', data.executionId)
-          formData1.append('modules', JSON.stringify(ids))
-          let response2 = await fetch(
-            `${base_url}functional/createModulejobs`,
-            {
-              method: 'POST',
-              headers: {
-                Authorization: token,
-              },
-              body: formData1,
-            }
-          )
-
-          if (response2.status === 201) {
-            const message = await response2.json()
+            const message = await response.json()
             setReturnMessage({
-              message: message.message || 'Test case created successfully with modules.',
+              message: message.message || 'Test library exported successfully!.',
               status: 'success',
             })
-          } else {
-            setReturnMessage({
-              message: 'Failed to create module jobs.',
-              status: 'error',
-            })
-          }
-        }else if(response1.status == 400){
-          setReturnMessage({
-            message: 'Test name already exist.',
-            status: 'error',
-          })
-          setResumeSaving(true)
-          setActiveTab(0)
-          return
+        // const formData1 = new FormData()
+        // formData1.append('projectId', project)
+        // // formData1.append('testName', testName)
+        // // formData1.append('testDescription', description)
+        // formData1.append('module', 'true')
+        // // formData1.append('locatorType', locatoryStrategy)
+        // let response1 = await fetch(`${base_url}functional/saveModulejob`, {
+        //   method: 'POST',
+        //   headers: {
+        //     Authorization: token,
+        //   },
+        //   body: formData1,
+        // })
+
+        // if (response1.status === 200) {
+        //   let data = await response1.json()
+        //   const formData1 = new FormData()
+        //   formData1.append('projectId', project)
+        //   // formData1.append('testName', testName)
+        //   formData1.append('executionId', data.executionId)
+        //   formData1.append('modules', JSON.stringify(ids))
+        //   let response2 = await fetch(
+        //     `${base_url}functional/createModulejobs`,
+        //     {
+        //       method: 'POST',
+        //       headers: {
+        //         Authorization: token,
+        //       },
+        //       body: formData1,
+        //     }
+        //   )
+
+        //   if (response2.status === 201) {
+        //     const message = await response2.json()
+        //     setReturnMessage({
+        //       message: message.message || 'Test case created successfully with modules.',
+        //       status: 'success',
+        //     })
+        //   } else {
+        //     setReturnMessage({
+        //       message: 'Failed to create module jobs.',
+        //       status: 'error',
+        //     })
+        //   }
+        // }else if(response1.status == 400){
+        //   setReturnMessage({
+        //     message: 'Test name already exist.',
+        //     status: 'error',
+        //   })
+        //   setResumeSaving(true)
+        //   // setActiveTab(0)
+        //   return
      
-        } else {
-          setReturnMessage({
-            message: 'Failed to save module job.',
-            status: 'error',
-          })
-        }
+        // } else {
+        //   setReturnMessage({
+        //     message: 'Failed to save module job.',
+        //     status: 'error',
+        //   })
+        // }
       } else {
         setReturnMessage({
           message: 'Failed to export modules.',
           status: 'error',
         })
       }
-      setResumeSaving(false)
+      // setResumeSaving(false)
       // console.log('save module', project, testName, locatoryStrategy)
       // console.log('create module', ids)
     } catch (error) {
-      setResumeSaving(false)
+      // setResumeSaving(false)
       setReturnMessage({
         message: 'An error occurred during the process.',
         status: 'error',
@@ -268,7 +281,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
         setModuleItems([])
         setSelectedModule([])
         setCommandlist([])
-        setActiveTab(0)
+        // setActiveTab(0)
         setReturnMessage(null)
         onClose();
   }
@@ -279,7 +292,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
       updatedModules.some((module) => module.exists)
     ) {
       // Show confirmation dialog if a module already exists
-      setActiveTab(1)
+      // setActiveTab(1)
       setConfirmAction(() => async () => {
         const updatedSelectedModules = selectedModule.map(module => {
           if (module.exists) {
@@ -290,14 +303,14 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
       });
       setSelectedModule(updatedSelectedModules)
         await savemodule()
-        onSave({
-          testName,
-          description,
-          project,
-          testType,
-          locatoryStrategy,
-          selectedModules: selectedModule,
-        })
+        // onSave({
+        //   // testName,
+        //   // description,
+        //   project,
+        //   // testType,
+        //   // locatoryStrategy,
+        //   selectedModules: selectedModule,
+        // })
     
         // setModuleItems([])
         // setSelectedModule([])
@@ -309,14 +322,14 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     } else {
       // Proceed to save if no existing modules
       await savemodule()
-      onSave({
-        testName,
-        description,
-        project,
-        testType,
-        locatoryStrategy,
-        selectedModules: selectedModule,
-      })
+      // onSave({
+      //   testName,
+      //   description,
+      //   project,
+      //   testType,
+      //   locatoryStrategy,
+      //   selectedModules: selectedModule,
+      // })
       // setModuleItems([])
       // setSelectedModule([])
       // setCommandlist([])
@@ -392,8 +405,8 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
       const activeProject = await window.sideAPI.projects.getActive()
       if (activeProject.tests.length > 0) {
         const data = activeProject.tests[0]
-        setTestName(data.name)
-        setDescription(data.name || '')
+        // setTestName(data.name)
+        // setDescription(data.name || '')
         // console.log('data', data)
         setCommandlist(data.commands)
         const commandslist = data.commands.filter(
@@ -402,7 +415,7 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
         // console.log('commands', commandslist)
         setModuleItems(commandslist)
         setSelectedModule(commandslist)
-        setTestType('side')
+        // setTestType('side')
       }
       await fetchUserProjects() // Fetch user projects
     }
@@ -412,22 +425,32 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     }
   }, [open])
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    // console.log('event', event)
+  // const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+  //   // console.log('event', event)
  
-    if (newValue === 1 && moduleItems.length === 0) {
-      // If the user tries to switch to the "Modules" tab but it's not present, stay on the "Config" tab
-      setActiveTab(0);
-    } else {
-      setActiveTab(newValue);
-    }
-  }
+  //   if (newValue === 1 && moduleItems.length === 0) {
+  //     // If the user tries to switch to the "Modules" tab but it's not present, stay on the "Config" tab
+  //     setActiveTab(0);
+  //   } else {
+  //     setActiveTab(newValue);
+  //   }
+  // }
 
-  const handleModuleChange = (index: number, value: string) => {
+  const handleModuleChange = (index: number, value: string,item:any) => {
+    console.log('itemmmm',item,selectedModule)
     const newItems = [...moduleItems]
     newItems[index].value = value
     setModuleItems(newItems)
-    setSelectedModule(newItems)
+    // setSelectedModule(newItems)
+      // Check if item.id exists in selectedModule
+
+    const existingModuleIndex = selectedModule.findIndex((module) => module.id === item.id);
+    if (existingModuleIndex !== -1) {
+      // If the module exists in selectedModule, update its value
+      const updatedSelectedModules = [...selectedModule];
+      updatedSelectedModules[existingModuleIndex].value = value;
+      setSelectedModule(updatedSelectedModules);
+    } 
   }
 
   const handleModulecheckboxChange = (item: any, checked: Boolean) => {
@@ -458,209 +481,155 @@ const SendtoXt: React.FC<SendtoXtProps> = ({ open, onClose, onSave }) => {
     setShowConfirmModal(false) // Just close the modal
   }
 
-  const handleCloseDialog = (_event: React.SyntheticEvent, reason: 'backdropClick' | 'escapeKeyDown') => {
-    if (reason === 'backdropClick') {
-      // Prevent closing the dialog on backdrop click
-      return;
-    }
+  const handleCloseDialog = (_event: React.SyntheticEvent, _reason: 'backdropClick' | 'escapeKeyDown') => {
+    // if (reason === 'backdropClick') {
+    //   // Prevent closing the dialog on backdrop click
+    //   return;
+    // }
     onClose();
   };
 
   return (
-    <>
-      <Dialog open={open} onClose={handleCloseDialog} >
+<>
+  <Dialog open={open} onClose={handleCloseDialog}>
+    <DialogTitle sx={{ borderBottom: '2px solid #ccc' }}>
+      Save Test Library (CoreALM XT)
+    </DialogTitle>
+    <DialogContent sx={{ position: 'relative' ,'maxHeight':'400px'}}>
+      <FormControl fullWidth margin="normal" size="small">
+        <div style={{ marginBottom: '10px' }}>Select Project</div>
+        <Select
+          labelId="project-label"
+          id="project-select"
+          value={project}
+          onChange={(e: SelectChangeEvent<string>) => setProject(e.target.value)}
+          displayEmpty
+          required
+          style={{ width: '540px' }}
+        >
+          {projectList.length === 0 ? (
+            <MenuItem value="noproj" disabled>
+              No projects available
+            </MenuItem>
+          ) : (
+            projectList.map((proj) => (
+              <MenuItem key={proj.id} value={proj.id}>
+                {proj.name}
+              </MenuItem>
+            ))
+          )}
+        </Select>
+      </FormControl>
+      <div>Recorded Test Libraries
+      
+
+
     
-        <DialogTitle>Send to CoreALM XT Cloud</DialogTitle>
-        <DialogContent  sx={{ position: 'relative' }}>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            aria-label="config and modules tabs"
-          >
-            <Tab label="Config" />
-            {moduleItems.length > 0 && <Tab label="Modules" />}
-          </Tabs>
+          {/* Add the note in italic font */}
+          {/* <Typography
+        variant="body2"
+        sx={{
+          width: '100%',
+          textAlign: 'center',
+          fontStyle: 'italic',
+          marginTop: '8px',
+          color: 'gray', // You can change the color if necessary
+        }}
+      >
+       
+      </Typography> */}
+     
 
-          {activeTab === 0 && (
-            <Box sx={{ mt: 2 }}>
-              <TextField
-                label="Test Name"
-                value={testName}
-                fullWidth
-                margin="normal"
-                onChange={(e) => setTestName(e.target.value)}
-              />
-              <TextField
-                label="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                fullWidth
-                margin="normal"
-              />
+   
+      {moduleItems.map((item, index) => {
+        const isExists = selectedModule.some(
+          (selectedItem) => selectedItem.id === item.id && selectedItem.exists
+        );
 
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="project-label">Select Project</InputLabel>
-                <Select
-                  labelId="project-label"
-                  id="project-select"
-                  value={project}
-                  label="Select Project"
-                  onChange={(e: SelectChangeEvent<string>) =>
-                    setProject(e.target.value)
-                  }
-                  displayEmpty
-                  required
-                >
-                  {projectList.length === 0 ? (
-                    <MenuItem value="noproj" disabled>
-                      No projects available
-                    </MenuItem>
-                  ) : (
-                    projectList.map((proj) => (
-                      <MenuItem key={proj.id} value={proj.id}>
-                        {proj.name}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-              </FormControl>
+        return (
+          <FormControl key={index} fullWidth margin="normal" size="small" style={{'marginTop':'2px'}}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedModule.some((selectedItem) => selectedItem.id === item.id)}
+                  onChange={(e) => handleModulecheckboxChange(item, e.target.checked)}
+                />
+              }
+              label={
+                <TextField
+                  value={item.value}
+                  onChange={(e) => handleModuleChange(index, e.target.value,item)}
+                  placeholder="Enter module name"
+                  InputProps={{
+                    style: {
+                      width: '510px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    },
+                  }}
+                  variant="outlined"
+                  size="small"
+                  error={isExists}
+                  helperText={isExists ? 'Already exists' : ''}
+                />
+              }
+            />
+          </FormControl>
+        );
+      })}
+         </div>
+      
+      <LoadingOverlay isLoading={isLoading}  message="Exporting your test libraries. Please hold on..."  />
+    </DialogContent>
 
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="test-type-label">Test Type</InputLabel>
-                <Select
-                  labelId="test-type-label"
-                  id="test-type-select"
-                  value={testType}
-                  label="Test Type"
-                  onChange={(e: SelectChangeEvent<string>) =>
-                    setTestType(e.target.value)
-                  }
-                  required
-                >
-                  <MenuItem value="side">Side</MenuItem>
-                  <MenuItem value="webrtc">WebRTC</MenuItem>
-                </Select>
-              </FormControl>
+    {returnMessage && (
+      <div
+        style={{
+          margin: 'auto',
+          color: returnMessage.status === 'error' ? 'red' : 'green',
+        }}
+      >
+        {returnMessage.message}
+      </div>
+    )}
+<em style={{'color':'rebeccapurple','marginLeft':'21px'}}> NB: Only selected test libraries will be saved</em>
+    <DialogActions sx={{ borderTop: '2px solid #ccc' }}>
+      <Button onClick={handleClose} color="primary" variant="outlined" disabled={isLoading}>
+        Cancel
+      </Button>
+      <Button
+        onClick={handleSave}
+        color="primary"
+        variant="contained" 
+        disabled={!isFormValid() || isLoading}
+        style={{'marginRight':'18px'}}
+      >
+        Save
+      </Button>
 
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="locatory-strategy-label">
-                  Locatory Strategy
-                </InputLabel>
-                <Select
-                  labelId="locatory-strategy-label"
-                  id="locatory-strategy-select"
-                  value={locatoryStrategy}
-                  label="Locatory Strategy"
-                  onChange={(e: SelectChangeEvent<string>) =>
-                    setLocatoryStrategy(e.target.value)
-                  }
-                  displayEmpty
-                  required
-                >
-                  <MenuItem value="default">CSS</MenuItem>
-                  <MenuItem value="absolute">XPath</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          )}
+  
+    </DialogActions>
+  </Dialog>
 
-          {activeTab === 1 && (
-            <Box sx={{ mt: 2 }}>
-              {moduleItems.map((item, index) => {
-                // Check if this item is in selectedModule and has exists: true
-                const isExists = selectedModule.some(
-                  (selectedItem) =>
-                    selectedItem.id === item.id && selectedItem.exists
-                )
-             
-                return (
-                  <FormControl key={index} fullWidth margin="normal">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedModule.some(
-                            (selectedItem) => selectedItem.id === item.id
-                          )}
-                          onChange={(e) =>
-                            handleModulecheckboxChange(item, e.target.checked)
-                          }
-                        />
-                      }
-                      label={
-                        <TextField
-                          value={item.value}
-                          onChange={(e) =>
-                            handleModuleChange(index, e.target.value)
-                          }
-                          placeholder="Enter module name"
-                          InputProps={{
-                            style: {
-                              width: '500px',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            },
-                          }}
-                          variant="outlined"
-                          size="small"
-                          error={isExists} // Show error if exists is true for this item
-                          helperText={isExists ? 'Already exists' : ''}
-                        />
-                      }
-                    />
-                  </FormControl>
-                )
-              })}
-            </Box>
-          )}
-         <LoadingOverlay isLoading={isLoading} />
-        </DialogContent>
-       {
-          returnMessage && (
-            <div
-              style={{
-                margin: 'auto',
-                color: returnMessage.status === 'error' ? 'red' : 'green',
-              }}
-            >
-              {returnMessage.message}
-            </div>
-          )
-        }
-        <DialogActions>
-          <Button onClick={handleClose} color="primary" disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSave}
-            color="primary"
-            disabled={!isFormValid() || isLoading}
-          >
-            Save Testcase
-          </Button>
-          {/* <Button onClick={handleSave} color="secondary" disabled={!isFormValid()}>
-            Run Test
-          </Button> */}
-        </DialogActions>
-      </Dialog>
+  <ConfirmDialog open={showConfirmModal} onClose={handleCancelConfirm}>
+    <DialogTitle>Test Library Already Exists!</DialogTitle>
+    <DialogContent>
+      <DialogContentText>
+        It may be utilized by various test cases. Do you want to proceed with replacing it?
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleCancelConfirm} color="primary">
+        Cancel
+      </Button>
+      <Button onClick={handleConfirmSave} color="primary">
+        Yes, Replace
+      </Button>
+    </DialogActions>
+  </ConfirmDialog>
+</>
 
-      <ConfirmDialog open={showConfirmModal} onClose={handleCancelConfirm}>
-        <DialogTitle>Module Already Exists!</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-           It may be utilized by various test cases. Do you want to proceed with replacing it?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelConfirm} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmSave} color="primary">
-            Yes, Replace
-          </Button>
-        </DialogActions>
-      </ConfirmDialog>
-    </>
   )
 }
 

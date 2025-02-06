@@ -42,7 +42,7 @@ export default class SystemController extends BaseController {
     )
   }
 
-  async getLogPath() {
+  getLogPath() {
     return this.session.app.getPath('logs')
   }
 

@@ -94,7 +94,7 @@ export default class ProjectsController {
       tests: [
         {
           id: testID,
-          name: 'New Test',
+          name: 'NewTest',
           commands: [
             {
               "id": randomUUID(),

@@ -1,14 +1,15 @@
 import FormControl from '@mui/material/FormControl'
-import HelpCenter from '@mui/icons-material/HelpCenter'
+// import HelpCenter from '@mui/icons-material/HelpCenter'
 // import TextField from 'browser/components/UncontrolledTextField'
 import TextField from '@mui/material/TextField'
 import startCase from 'lodash/fp/startCase'
+import { useIntl } from 'react-intl'
 import React, { FC } from 'react';
 import { CommandFieldProps } from '../types'
 import { updateField } from './utils'
-import Tooltip from '@mui/material/Tooltip'
+// import Tooltip from '@mui/material/Tooltip'
 import { LocatorFields } from '@seleniumhq/side-api'
-import { useIntl } from 'react-intl'
+
 import languageMap from 'browser/I18N/keys'
 
 
@@ -155,11 +156,11 @@ const CommandTextField: FC<CommandFieldProps> = ({
         value={command[fieldName as LocatorFields]}
       />
       
-      {fullNote && (
+      {/* {fullNote && (
         <Tooltip className="mx-2 my-auto" title={fullNote} placement="top-end">
           <HelpCenter />
         </Tooltip>
-      )}
+      )} */}
     </FormControl>
     
   );

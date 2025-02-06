@@ -37,7 +37,7 @@ export default () => {
       },
       config,
       panelGroups: {
-        "editor-playback": [25, 75],
+        "editor-playback": [70, 25],
         "playback-logger": [80, 20]
       },
       plugins: [],

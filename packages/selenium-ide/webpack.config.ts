@@ -219,7 +219,7 @@ function getBrowserPlugin(filename: string) {
           }
           <script defer src="${filename}-bundle.js"></script>
         </head>
-        <body>
+        <body style="background-color:#F5F6FA;">
           <div id="root">
             <div id="loading"></div>
           </div>

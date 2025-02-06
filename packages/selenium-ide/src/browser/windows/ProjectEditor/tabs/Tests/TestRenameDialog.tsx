@@ -22,6 +22,10 @@ const TestRenameDialog: React.FC<TestRenameDialogProps> = ({
   testName: _testName,
 }) => {
   const [testName, setTestName] = React.useState(_testName)
+  const [returnMessage, setReturnMessage] = React.useState<{
+    message: string
+    status: 'success' | 'error'
+  } | null>(null)
 
   const handleClose = async (value: CloseReason) => {
     if (value === 'Rename') {
@@ -39,10 +43,35 @@ const TestRenameDialog: React.FC<TestRenameDialogProps> = ({
     }
   }
 
+  const handleTestName = async(inputValue:string)=>{
+    try {
+      setReturnMessage(null)
+      const regex = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/? ]+/gi;
+      if (inputValue.length >= 50) {
+
+        setReturnMessage({
+          'message':'Test name must be less than 50 characters',
+          'status':'error'
+        })
+      
+      } else if (regex.test(inputValue)) {
+        setReturnMessage({
+          'message':"Space and special characters are not allowed",
+          'status':'error'
+        })
+      } else {
+        setTestName(inputValue);    
+      }
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Dialog
       classes={{
-        container: 'justify-content-start',
+        container: 'justify-content-end',
       }}
       onClose={handleClose}
       open={open}
@@ -57,12 +86,24 @@ const TestRenameDialog: React.FC<TestRenameDialogProps> = ({
           id="name"
           label="Test Name"
           margin="dense"
-          onChange={(e) => setTestName(e.target.value)}
+          onChange={(e) => handleTestName(e.target.value)}
           onKeyDown={onKeyDown}
           value={testName}
           variant="standard"
         />
       </DialogContent>
+      {
+          returnMessage && (
+            <div
+              style={{
+                margin: 'auto',
+                color: returnMessage.status === 'error' ? 'red' : 'green',
+              }}
+            >
+              {returnMessage.message}
+            </div>
+          )
+        }
       <DialogActions>
         <Button onClick={() => handleClose('Cancel')}>Cancel</Button>
         <Button onClick={() => handleClose('Rename')}>Rename</Button>

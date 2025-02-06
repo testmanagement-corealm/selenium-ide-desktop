@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
 import FormControl from '@mui/material/FormControl'
-import HelpCenter from '@mui/icons-material/HelpCenter'
+// import HelpCenter from '@mui/icons-material/HelpCenter'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import Tooltip from '@mui/material/Tooltip'
+// import Tooltip from '@mui/material/Tooltip'
 import startCase from 'lodash/fp/startCase'
 import { CommandFieldProps } from '../types'
 import { updateField } from './utils'
@@ -95,11 +95,11 @@ const SelectField: FC<SelectFieldProps> = ({
         ))}
       </Select>
 
-      {fullNote && (
+      {/* {fullNote && (
         <Tooltip className="mx-2 my-auto" title={fullNote} placement="top-end">
           <HelpCenter />
         </Tooltip>
-      )}
+      )} */}
     </FormControl>
   )
 }

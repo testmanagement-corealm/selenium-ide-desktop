@@ -98,9 +98,15 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ fullNameval }) => {
         } else {
           const userDetails = await response.json();
           console.log(userDetails);
-          
-          setErrorMessage('Incorrect username or password.');
+            userDetails.message = userDetails.message? userDetails.message:''
+        userDetails.userId = userDetails.userId? userDetails.userId:''
+        if(userDetails.message !=="TWOFA ENABLED"){
+          setErrorMessage('Incorrect username or password.')
+          setLoginOpen(false)
+        }
+         
           setLoginOpen(true);
+          return userDetails
         }
       } catch (error) {
         console.error('Error during login:', error);
@@ -192,6 +198,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ fullNameval }) => {
       onClose={() => setLoginOpen(false)}
       onLogin={handleLogin}
       errorMessage={errorMessage}
+      fullname={(name)=>{
+        if(name){
+          setFullName(name)
+          setIsLoggedIn(true)
+        }
+      }}
     />
   )}
 

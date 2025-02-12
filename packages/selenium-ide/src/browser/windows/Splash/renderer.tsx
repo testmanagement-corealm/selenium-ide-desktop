@@ -112,6 +112,7 @@ const ProjectEditor = () => {
   const handleLogout = async () => {
     await window.sideAPI.driver.setToken('') // Clear the token
     setFullName('Guest') // Set full name to "Guest"
+    console.log('loginopn')
     setLoginOpen(true) // Show login dialog
     handleMenuClose() // Close the menu
   }
@@ -142,12 +143,17 @@ const ProjectEditor = () => {
 
       // Check the response status
       if (response.status !== 200) {
-        const userDetails = await response.json()
+        let userDetails = await response.json()
+        userDetails.message = userDetails.message? userDetails.message:''
+        userDetails.userId = userDetails.userId? userDetails.userId:''
         console.log('Login failed!', userDetails)
-        setErrorMessage('Incorrect username or password.')
+        if(userDetails.message !=="TWOFA ENABLED"){
+          setErrorMessage('Incorrect username or password.')
+        }
+       
         setLoginOpen(true)
 
-        return false // Indicate that login was unsuccessful
+        return userDetails // Indicate that login was unsuccessful
       }
 
       // If login is successful, process user details
@@ -269,6 +275,11 @@ const ProjectEditor = () => {
           onClose={() => setLoginOpen(false)}
           onLogin={handleLogin}
           errorMessage={errorMessage}
+          fullname={(name)=>{
+            if(name){
+              setFullName(name)
+            }
+          }}
         />
       )}
 

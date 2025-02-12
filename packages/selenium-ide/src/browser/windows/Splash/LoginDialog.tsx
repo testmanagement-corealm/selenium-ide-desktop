@@ -10,21 +10,40 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import TwoFADialog from './TwoFaDialog';
 interface LoginDialogProps {
   open: boolean;
   onClose: () => void;
-  onLogin: (username: string, password: string) => void;
+  onLogin: (username: string, password: string) => Promise<{ message: string, userId: string }>; // Modify return type
   errorMessage?: string; // Optional error message prop
+ fullname: (arg0: string) => void;
 }
 
-const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose, onLogin, errorMessage }) => {
+const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose, onLogin, errorMessage, fullname }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [opentwofa, setopentwofa] = useState<boolean>(false);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+  const[userId, setUserId] = useState<string>('')
+  const[opendialog,setOpenDialog]= useState<boolean>(false)
+ 
+  useEffect(()=>{
+    console.log('open login', open)
+     setOpenDialog(open)
+  },[open])
 
-  const handleLogin = () => {
-    onLogin(username, password);
+  const handleLogin =  async() => {
+    let res =  await onLogin(username, password);
+    console.log('res',res)
+    if(res.message && res.message =='TWOFA ENABLED' && res.userId){
+      setopentwofa(true)
+      setUserId(res.userId)
+      setOpenDialog(false)
+    }
+    
+    //  onClose()
+  
   };
 
   const handleClose = (event: any, reason: any) => {
@@ -47,7 +66,7 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose, onLogin, error
   };
   const stopOverlay=async()=>{
     try{
-           await window.sideAPI.driver.stopProcessonMenuclick();
+     await window.sideAPI.driver.stopProcessonMenuclick();
     }catch(err){
       console.log(err)
     }
@@ -57,11 +76,21 @@ useEffect(() => {
     // Focus on the username input when the dialog opens
     const usernameInput = document.getElementById('username-input');
     usernameInput?.focus();
-  }, [open]);
+  }, [open]);9
+  const handletwofacancel =(val: boolean | ((prevState: boolean) => boolean))=>{
+    console.log('submit twofa', val)
+    if(!val){
+      onClose()
+    }
+    setOpenDialog(val)
+    setopentwofa(false)
+  }
 
   return (
+    <>
+    <TwoFADialog isOpened={opentwofa} cancel={handletwofacancel} userId={userId}  fullname={fullname}/>
     <Dialog
-      open={open}
+      open={opendialog}
       onClose={handleClose}
       PaperProps={{
         style: { zIndex: 99999999 },
@@ -115,6 +144,7 @@ useEffect(() => {
         </Button>
       </DialogActions>
     </Dialog>
+    </>
   );
 };
 
